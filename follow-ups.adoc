@@ -62,6 +62,19 @@ and policy images. Approach:
 +
 The *Verifying images* item above and the *Runtime Enforcer quick start*
 item below are examples.
+* *Personal paths in examples.* Four `admission-controller` tutorials have a
+  local path from an author's workstation in their example commands and
+  output, for example `-v /home/jhk/projects/suse/tmp/go-kw-demo:/src` and
+  `Compiling demo v0.1.0 (/home/jhk/projects/suse/tmp/demo)`. Replace them
+  upstream with a neutral path, for example `$PWD` or `/home/user/demo`:
+** `tutorials/writing-policies/go/02-scaffold.adoc`
+** `tutorials/writing-policies/go/10-raw-policies.adoc`
+** `tutorials/writing-policies/rust/03-define-policy-settings.adoc`
+** `tutorials/writing-policies/rust/05-mutation-policy.adoc`
++
+All versions from 1.28 to 1.39 have them, in English and in the translations.
+Fix the dev version upstream. The translations get the fix from the next
+translation run.
 * *Runtime Enforcer quick start.* The quick start uses
   `helm repo add ... {runtime-enforcer-helm-chart}`. The product chart is an
   `oci://` reference, which `helm repo add` does not accept.
