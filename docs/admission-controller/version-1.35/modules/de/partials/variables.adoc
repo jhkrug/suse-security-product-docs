@@ -1,0 +1,7 @@
+// Include shared project global variables
+include::latest@shared:en:partial$kubewarden-variables-1.36-forward.adoc[]
+
+:project-name: {admc-name}
+:short-project-name: {admc-short-name}
+
+// global variables for this version below:

@@ -1,0 +1,15 @@
+// This partial file contains variables that are relevant only for the product
+// version. This version uses the legacy shared partial, which sets the product
+// registry, Helm chart, and install defaults.
+
+// Default container image tag used in the documentation version. All the admission
+// controller container images share the container tag.
+:default-container-image-tag: 1.37.0
+
+// The documentation repository and team, used by the contribution guide.
+// Version 1.39 and later get these from shared product-specific/globals.adoc.
+// This version still uses the legacy shared partial, so it sets them here.
+// Changes to the documentation go to the upstream community repository.
+:docs-repo-name: kubewarden/docs
+:docs-repo-url: https://github.com/{docs-repo-name}
+:docs-team-url: https://github.com/orgs/kubewarden/teams/kubewarden-documentation

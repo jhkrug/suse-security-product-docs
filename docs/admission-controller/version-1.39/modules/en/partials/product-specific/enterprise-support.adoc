@@ -1,0 +1,3 @@
+// Product only: the enterprise support text. The community repository has
+// a community-specific/enterprise-support.adoc.
+SUSE provides full enterprise support for CNCF {admc-community-name} through the link:https://apps.rancher.io/applications/suse-security-admission-controller[{admc-product-name}] — a curated and trusted version of {admc-community-name} built on top of SUSE Linux BCI base images. This solution ensures enhanced security, stability, and compatibility for enterprise-grade Kubernetes environments.

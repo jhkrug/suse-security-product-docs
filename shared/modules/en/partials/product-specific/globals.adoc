@@ -1,0 +1,37 @@
+// Product specific global attributes. In scope for all components of
+// SUSE Security. The names come from globals.adoc. This file only selects the
+// product names. The community repository has a community-specific/globals.adoc
+// that selects the community names.
+
+:admc-name: {admc-product-name}
+:admc-short-name: {admc-product-short-name}
+:admc-abbrev: {admc-product-abbrev}
+
+:co-name: {co-product-name}
+:co-short-name: {co-product-short-name}
+:co-abbrev: {co-product-abbrev}
+
+:ne-name: {ne-product-name}
+:ne-short-name: {ne-product-short-name}
+:ne-abbrev: {ne-product-abbrev}
+
+:rte-name: {rte-product-name}
+:rte-short-name: {rte-product-short-name}
+:rte-abbrev: {rte-product-abbrev}
+
+:sboms-name: {sboms-product-name}
+:sboms-short-name: {sboms-product-short-name}
+:sboms-abbrev: {sboms-product-abbrev}
+
+:waf-name: {waf-product-name}
+:waf-short-name: {waf-product-short-name}
+:waf-abbrev: {waf-product-abbrev}
+
+// The product security team, used by the security disclosure pages.
+:project-security-team: {product-project-name} Team
+
+// The documentation repository and team, used by the contribution guide.
+// Changes to the documentation go to the upstream community repository.
+:docs-repo-name: kubewarden/docs
+:docs-repo-url: https://github.com/{docs-repo-name}
+:docs-team-url: https://github.com/orgs/kubewarden/teams/kubewarden-documentation

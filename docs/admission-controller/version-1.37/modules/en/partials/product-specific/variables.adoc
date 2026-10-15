@@ -1,0 +1,7 @@
+// This partial file contains variables that are relevant only for the product
+// version. This version uses the legacy shared partial, which sets the product
+// registry, Helm chart, and install defaults.
+
+// Default container image tag used in the documentation version. All the admission
+// controller container images share the container tag.
+:default-container-image-tag: 1.37.0

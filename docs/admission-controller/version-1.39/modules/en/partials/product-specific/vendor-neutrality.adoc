@@ -1,0 +1,2 @@
+// Product only: the introduction has no vendor neutrality section in the
+// product build. {intro-paragraph} describes the community origin instead.

@@ -1,0 +1,11 @@
+# Dependencies
+/node_modules
+
+# Build output and logs
+/build
+/build-*
+/tmp
+
+.idea
+.vscode
+.DS_Store
