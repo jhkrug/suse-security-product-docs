@@ -86,7 +86,9 @@ translation run.
   of each of these versions also lists the language navs. The sync must keep
   them. When the English pages change, the sync must also copy new English
   pages into the language modules as placeholders, add them to the language
-  navs, and remove pages that no longer exist in English.
+  navs, and remove pages that no longer exist in English. It must also
+  refresh the existing placeholders, which are copies of the English pages,
+  when those English pages change.
 * *Sync: component titles.* The product `antora.yml` files differ from
   upstream in `title:`, and for translated versions in `nav:`. The sync script
   must keep these `title:` values:

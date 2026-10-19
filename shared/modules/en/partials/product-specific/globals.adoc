@@ -1,31 +1,54 @@
 // Product specific global attributes. In scope for all components of
-// SUSE Security. The names come from globals.adoc. This file only selects the
-// product names. The community repository has a community-specific/globals.adoc
-// that selects the community names.
+// SUSE Security. The shared globals.adoc holds only the community names. This
+// file defines the product names and selects them for this build. The
+// community repository has a community-specific/globals.adoc that selects the
+// community names. The product names have no abbreviations.
 
+// Product name.
+:product-project-name: SUSE Security
+
+// Admission Controller.
+:admc-product-name: {product-project-name} Admission Controller
+:admc-product-short-name: Admission Controller
+
+// Compliance Operator.
+:co-product-name: {product-project-name} Compliance Operator
+:co-product-short-name: Compliance Operator
+
+// Network Enforcer.
+:ne-product-name: {product-project-name} Network Enforcer
+:ne-product-short-name: Network Enforcer
+
+// Runtime Enforcer.
+:rte-product-name: {product-project-name} Runtime Enforcer
+:rte-product-short-name: Runtime Enforcer
+
+// SBOM Scanner.
+:sboms-product-name: {product-project-name} Vulnerability Scanner
+:sboms-product-short-name: Vulnerability Scanner
+
+// Web Application Firewall.
+:waf-product-name: {product-project-name} Web Application Firewall
+:waf-product-short-name: Web Application Firewall
+
+// Select the product names for this build.
 :admc-name: {admc-product-name}
 :admc-short-name: {admc-product-short-name}
-:admc-abbrev: {admc-product-abbrev}
 
 :co-name: {co-product-name}
 :co-short-name: {co-product-short-name}
-:co-abbrev: {co-product-abbrev}
 
 :ne-name: {ne-product-name}
 :ne-short-name: {ne-product-short-name}
-:ne-abbrev: {ne-product-abbrev}
 
 :rte-name: {rte-product-name}
 :rte-short-name: {rte-product-short-name}
-:rte-abbrev: {rte-product-abbrev}
 
 :sboms-name: {sboms-product-name}
 :sboms-short-name: {sboms-product-short-name}
-:sboms-abbrev: {sboms-product-abbrev}
 
 :waf-name: {waf-product-name}
 :waf-short-name: {waf-product-short-name}
-:waf-abbrev: {waf-product-abbrev}
 
 // The product security team, used by the security disclosure pages.
 :project-security-team: {product-project-name} Team
