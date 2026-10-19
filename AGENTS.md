@@ -29,9 +29,10 @@ For why this repository exists and the design choices behind it, see
   - `docs/kw/version-*/antora.yml`: `SUSE Security`
 - The language navs in the `nav:` list of the `antora.yml` of each translated
   component version, for example `modules/de/nav.adoc`. The sync keeps them.
-- Build files: the `ss-*-product-playbook.yml` playbooks, `Makefile`,
-  `package.json`, `package-lock.json`, `.gitmodules`, and the
-  `dsc-style-bundle` and `product-docs-common` submodules.
+- Build files: the `local-product-playbook.yml` and
+  `remote-product-playbook.yml` playbooks, `Makefile`, `package.json`,
+  `package-lock.json`, `.gitmodules`, and the `dsc-style-bundle` and
+  `product-docs-common` submodules.
 - `follow-ups.adoc`: open questions and known issues.
 
 The automated translation process writes the localized content, the language

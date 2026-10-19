@@ -95,25 +95,20 @@ translation run.
 ** `docs/kw/version-*/antora.yml`: `title: SUSE Security` (upstream
    `Kubewarden`).
 
-* *Mermaid diagrams.* `@sntke/antora-mermaid-extension` applies `subs` to the
-  wrong value, so diagrams with `[mermaid,subs="attributes"]` render as the
-  word "attributes". Draft fixes, tested together with this repository:
-** `product-docs-common`, branch `feat/mermaid-block`: adds
-   `extensions/mermaid-block/mermaid-block.js`, the community block processor.
-** `dsc-style-bundle`, branch `feat/mermaid-loader`: replaces the broken
-   placeholder in `supplemental-files/rancher/partials/header-scripts.hbs`
-   with a script that loads mermaid on pages that contain a diagram. The
-   placeholder text `{!-- Add header scripts here --}}` shows on every page of
-   sites that do not use the sntke extension.
-** After both merge: bump the submodules here, replace the sntke extension in
-   the product playbooks with the `product-docs-common` block processor, and
-   remove `@sntke/antora-mermaid-extension` from `package.json`. Make the same
-   change in `product-docs-playbook`.
+* *Mermaid diagrams in the publishing playbook.*
+  `@sntke/antora-mermaid-extension` applies `subs` to the wrong value, so
+  diagrams with `[mermaid,subs="attributes"]` render as the word "attributes".
+  rancher/product-docs-common#102 (block processor) and
+  SUSEdoc/dsc-style-bundle#88 (mermaid loader) fix this, and this repository
+  uses them. `product-docs-playbook` still uses the sntke extension. Bump its
+  submodules, replace the extension with
+  `./product-docs-common/extensions/mermaid-block/mermaid-block.js` under
+  `asciidoc.extensions`, and remove the package.
 * *Publishing playbook.* `product-docs-playbook` builds the published site.
   When this repository goes live:
 ** Replace the `kubewarden-product-docs`, `sbomscanner-product-docs`, and
    `runtime-enforcer-product-docs` sources with one source for this repository,
-   with the same start paths as `ss-remote-product-playbook.yml`.
+   with the same start paths as `remote-product-playbook.yml`.
 ** It sets `build-type: product@` and the old `kw-build-type`. Check that no
    page overrides `build-type`.
 ** It indexes with `index_latest_only: true`. This repository uses `false`.

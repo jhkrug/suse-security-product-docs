@@ -18,7 +18,7 @@ product-local: tmpdir environment build-product-local
 build-product-local:
 	npx antora --version | tee tmp/build.log
 	npx antora --stacktrace --log-format=pretty --log-level=info \
-		ss-local-product-playbook.yml \
+		local-product-playbook.yml \
 		2>&1 | tee -a tmp/build.log
 	$(MAKE) post-process
 	@echo ""
@@ -30,7 +30,7 @@ build-product-local:
 product-remote: tmpdir environment
 	npx antora --version | tee tmp/build.log
 	npx antora --stacktrace --log-format=pretty --log-level=info \
-		ss-remote-product-playbook.yml \
+		remote-product-playbook.yml \
 		2>&1 | tee -a tmp/build.log
 	$(MAKE) post-process
 
@@ -81,7 +81,7 @@ dev: tmpdir environment
 	touch tmp/reload-stamp
 	npx nodemon \
 		--watch docs --watch shared \
-		--watch ss-local-product-playbook.yml \
+		--watch local-product-playbook.yml \
 		--ext adoc,yml,hbs,css,js,svg,png \
 		--delay 1 \
 		--exec "$(MAKE) build-product-local && touch tmp/reload-stamp" & \
