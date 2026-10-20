@@ -1,16 +1,17 @@
-# SUSE Security product documentation.
+= SUSE Security product documentation
 
-SUSE Security product documentation is derived from upstream community
-documentation at https://github.com/kubewarden/docs. Any changes to the
-documentation should be made there with a small number of very limited
-exceptions.
+SUSE Security product documentation is derived from the upstream community
+documentation at https://github.com/kubewarden/docs. Make any changes to the
+documentation there. There is a small number of very limited exceptions.
 
-This repository is effectively a copy of the upstream repository with those
-exceptions and the automated translated/localized content.
+This repository is a copy of the upstream repository, plus those exceptions
+and the automated translated content. `AGENTS.md` lists the exceptions.
 
-PRs for the localized content will not be accepted as they will be overwritten
-by the automated translation process.
+PRs for the translated content are not accepted, because the automated
+translation process overwrites them. If you would like to contribute more
+accurate translations, please get in touch, and we can arrange for your
+changes to go into our translation memory.
 
-PRS that could be made against the upstream repository should be made there, and
-will be rejected here. When made upstream the publishing process will
-automatically update this repository with the changes.
+Make all other PRs against the upstream repository. PRs here that do not
+change the exceptions are rejected. When a change is made upstream, the
+publishing process updates this repository automatically.
