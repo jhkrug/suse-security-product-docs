@@ -89,6 +89,22 @@ translation run.
   navs, and remove pages that no longer exist in English. It must also
   refresh the existing placeholders, which are copies of the English pages,
   when those English pages change.
+* *Sync: language variables partials.* Each language module of the
+  translated versions has its own copy of `partials/variables.adoc` and
+  `partials/product-specific/variables.adoc`. The translated pages include
+  these copies, not the English files. The copies hold attributes, not
+  translated text, and must be the same as the English files. When the sync
+  changes an English file, it must copy it to all the language modules. If
+  a copy is out of date, the translated pages get missing attributes or old
+  values. Symlinks to the English files, as for `images`, could replace the
+  copies if the translation process does not overwrite them.
+* *Sync: moved pages.* When an English page moves, for example from
+  `pages/howtos/` to `pages/product-specific/howtos/`, the rule above would
+  remove the translated pages and add English placeholders. This loses the
+  translations. The sync must detect moved pages and move the translated
+  pages to the new path with `git mv`. It must also update the paths in the
+  language navs and in the xrefs and image macros of the translated pages.
+  The move of the Rancher how-tos in 1.35 to 1.39 was done this way by hand.
 * *Sync: component titles.* The product `antora.yml` files differ from
   upstream in `title:`, and for translated versions in `nav:`. The sync script
   must keep these `title:` values:
