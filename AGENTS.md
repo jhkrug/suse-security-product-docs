@@ -33,6 +33,9 @@ For why this repository exists and the design choices behind it, see
   `remote-product-playbook.yml` playbooks, `Makefile`, `package.json`,
   `package-lock.json`, `.gitmodules`, and the `dsc-style-bundle` and
   `product-docs-common` submodules.
+- `scripts/` and `.github/`: tooling and workflows for this repository, for
+  example the sync script. Upstream has its own `scripts/` and `.github/`
+  for the community repository. The sync does not copy them.
 - `follow-ups.adoc`: open questions and known issues.
 
 The automated translation process writes the localized content, the language

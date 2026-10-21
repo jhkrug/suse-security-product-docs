@@ -31,8 +31,10 @@ The product repository is a copy of the upstream repository plus a small
 product layer.
 
 - A script and a GitHub Action (not written yet) copy the upstream content to
-  this repository. They copy everything except the `community-specific/`
-  directories.
+  this repository. They copy the content under `docs/` and `shared/`, except
+  the `community-specific/` directories. They do not copy the upstream
+  tooling, for example `scripts/`, `.github/`, and `updatecli/`. Each
+  repository has its own.
 - The product layer is in `product-specific/` directories. The shared pages
   include build specific content with `{build-type}-specific/`. The playbooks
   set `build-type: product`, so the product build uses the product files.
@@ -52,7 +54,8 @@ playbooks in this repository are for local builds and previews.
 
 ### What the sync must do
 
-- Copy the upstream content, except `community-specific/`.
+- Copy the upstream content under `docs/` and `shared/`, except
+  `community-specific/`. Leave out the upstream tooling.
 - Keep the product layer and the other differences listed in `AGENTS.md`.
 - Bump `{release-tag}` and `{chart-version}` in the product `variables.adoc`
   of each component dev version. Upstream, updatecli bumps them only in
