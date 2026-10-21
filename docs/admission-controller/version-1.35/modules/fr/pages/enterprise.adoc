@@ -18,10 +18,10 @@ Ces organisations fournissent un support d'entreprise pour {project-name} :
 | Organisation | Offre
 
 | link:https://suse.com[SUSE]
-| SUSE fournit un support d'entreprise complet pour CNCF {kw-community-project-name} via le link:https://apps.rancher.io/applications/suse-security-admission-controller[SUSE Security Admission Controller] — une version sélectionnée et digne de confiance de {kw-community-project-name} construite sur des images de base SUSE Linux BCI. Cette solution garantit une sécurité, une stabilité et une compatibilité accrues pour les environnements Kubernetes de niveau entreprise.
+| SUSE fournit un support d'entreprise complet pour CNCF {community-project-name} via le link:https://apps.rancher.io/applications/suse-security-admission-controller[SUSE Security Admission Controller] — une version sélectionnée et digne de confiance de {community-project-name} construite sur des images de base SUSE Linux BCI. Cette solution garantit une sécurité, une stabilité et une compatibilité accrues pour les environnements Kubernetes de niveau entreprise.
 |===
 endif::[]
 
 ifeval::["{build-type}" == "product"]
-SUSE fournit un support d'entreprise complet pour CNCF {kw-community-project-name} via le link:https://apps.rancher.io/applications/suse-security-admission-controller[SUSE Security Admission Controller] — une version sélectionnée et digne de confiance de {kw-community-project-name} construite sur des images de base SUSE Linux BCI. Cette solution garantit une sécurité, une stabilité et une compatibilité accrues pour les environnements Kubernetes de niveau entreprise.
+SUSE fournit un support d'entreprise complet pour CNCF {community-project-name} via le link:https://apps.rancher.io/applications/suse-security-admission-controller[SUSE Security Admission Controller] — une version sélectionnée et digne de confiance de {community-project-name} construite sur des images de base SUSE Linux BCI. Cette solution garantit une sécurité, une stabilité et une compatibilité accrues pour les environnements Kubernetes de niveau entreprise.
 endif::[]

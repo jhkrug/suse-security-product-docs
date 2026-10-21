@@ -1,15 +1,18 @@
-// This partial file contains variables that are relevant only for the product
-// version. This version uses the legacy shared partial, which sets the product
-// registry, Helm chart, and install defaults.
+// This partial file contains variables that are relevant only for the
+// product version.
+
+// The project origin sentence, used by the introduction page.
+:intro-paragraph: {admc-name} is derived from a vendor neutral, https://cncf.io[CNCF] Sandbox project, called link:https://kubewarden.io[{community-project-name}], originally created by https://www.rancher.com/[SUSE Rancher]. The name {admc-name} may be shortened to {admc-short-name}. The name {community-project-name} refers to the open-source community project. The name {community-project-name} may also be used throughout this documentation in place of {admc-name} or {admc-short-name}. This will be in references in source code or configuration examples.
+
+// Container registry, Helm chart, and install defaults.
+:default-oci-registry: dp.apps.rancher.io
+:default-oci-admcontroller-container-namespace: containers
+:default-policy-server-image: {default-oci-registry}/{default-oci-admcontroller-container-namespace}/kubewarden-policy-server
+:admc-chart-location: oci://dp.apps.rancher.io/charts/suse-security-admission-controller
+:admc-namespace: suse-sec-adm-controller
+// Default name used when installing the admission-controller component. (e.g. helm install)
+:admc-release: suse-sec-adm-controller
 
 // Default container image tag used in the documentation version. All the admission
 // controller container images share the container tag.
 :default-container-image-tag: 1.37.0
-
-// The documentation repository and team, used by the contribution guide.
-// Version 1.39 and later get these from shared product-specific/globals.adoc.
-// This version still uses the legacy shared partial, so it sets them here.
-// Changes to the documentation go to the upstream community repository.
-:docs-repo-name: kubewarden/docs
-:docs-repo-url: https://github.com/{docs-repo-name}
-:docs-team-url: https://github.com/orgs/kubewarden/teams/kubewarden-documentation

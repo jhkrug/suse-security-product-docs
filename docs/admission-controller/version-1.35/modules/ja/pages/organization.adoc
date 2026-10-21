@@ -44,5 +44,5 @@ include::partial$variables.adoc[]
 また、次のものも維持されています：
 
 * link:https://github.com/kubewarden/rfc[RFCs]はプロジェクトのために用意されています。
-* link:https://www.kubewarden.io/blog/[ブログ投稿]は、{kw-community-project-name}リリースに関連する一連の投稿です。
-* {kw-community-project-name}の管理におけるlink:https://github.com/kubewarden/community[コミュニティ]に関連するアイテム。
+* link:https://www.kubewarden.io/blog/[ブログ投稿]は、{community-project-name}リリースに関連する一連の投稿です。
+* {community-project-name}の管理におけるlink:https://github.com/kubewarden/community[コミュニティ]に関連するアイテム。

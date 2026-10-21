@@ -18,10 +18,10 @@ Essas organização(ões) fornecem suporte empresarial para {project-name}:
 | Organização | Oferta
 
 | link:https://suse.com[SUSE]
-| A SUSE fornece suporte empresarial completo para CNCF {kw-community-project-name} através do link:https://apps.rancher.io/applications/suse-security-admission-controller[SUSE Security Admission Controller] — uma versão curada e confiável de {kw-community-project-name} construída sobre as imagens base do SUSE Linux BCI. Esta solução garante segurança, estabilidade e compatibilidade aprimoradas para ambientes Kubernetes de nível empresarial.
+| A SUSE fornece suporte empresarial completo para CNCF {community-project-name} através do link:https://apps.rancher.io/applications/suse-security-admission-controller[SUSE Security Admission Controller] — uma versão curada e confiável de {community-project-name} construída sobre as imagens base do SUSE Linux BCI. Esta solução garante segurança, estabilidade e compatibilidade aprimoradas para ambientes Kubernetes de nível empresarial.
 |===
 endif::[]
 
 ifeval::["{build-type}" == "product"]
-A SUSE fornece suporte empresarial completo para CNCF {kw-community-project-name} através do link:https://apps.rancher.io/applications/suse-security-admission-controller[SUSE Security Admission Controller] — uma versão curada e confiável de {kw-community-project-name} construída sobre as imagens base do SUSE Linux BCI. Esta solução garante segurança, estabilidade e compatibilidade aprimoradas para ambientes Kubernetes de nível empresarial.
+A SUSE fornece suporte empresarial completo para CNCF {community-project-name} através do link:https://apps.rancher.io/applications/suse-security-admission-controller[SUSE Security Admission Controller] — uma versão curada e confiável de {community-project-name} construída sobre as imagens base do SUSE Linux BCI. Esta solução garante segurança, estabilidade e compatibilidade aprimoradas para ambientes Kubernetes de nível empresarial.
 endif::[]

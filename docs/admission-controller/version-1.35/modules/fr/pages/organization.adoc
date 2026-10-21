@@ -44,5 +44,5 @@ Un lien vers la source de la page sur GitHub se trouve en bas de chaque page.
 Sont également maintenus :
 
 * link:https://github.com/kubewarden/rfc[RFCs] pour le projet.
-* Une série de link:https://www.kubewarden.io/blog/[billets de blog] liés aux versions de {kw-community-project-name}.
-* Éléments liés à la gestion de link:https://github.com/kubewarden/community[la communauté] de {kw-community-project-name}.
+* Une série de link:https://www.kubewarden.io/blog/[billets de blog] liés aux versions de {community-project-name}.
+* Éléments liés à la gestion de link:https://github.com/kubewarden/community[la communauté] de {community-project-name}.

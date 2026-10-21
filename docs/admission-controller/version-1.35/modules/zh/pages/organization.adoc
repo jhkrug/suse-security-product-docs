@@ -44,5 +44,5 @@ include::partial$variables.adoc[]
 另外还维护：
 
 * link:https://github.com/kubewarden/rfc[RFCs] 用于该项目。
-* 一系列与 {kw-community-project-name} 发布相关的 link:https://www.kubewarden.io/blog/[博客文章]。
-* 与 {kw-community-project-name} 的 link:https://github.com/kubewarden/community[社区] 管理相关的项目。
+* 一系列与 {community-project-name} 发布相关的 link:https://www.kubewarden.io/blog/[博客文章]。
+* 与 {community-project-name} 的 link:https://github.com/kubewarden/community[社区] 管理相关的项目。

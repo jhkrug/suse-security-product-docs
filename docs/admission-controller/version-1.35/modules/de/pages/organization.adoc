@@ -44,5 +44,5 @@ Ein Link zur Quellseite auf GitHub befindet sich am Ende jeder Seite.
 Es werden auch folgende Ressourcen gepflegt:
 
 * link:https://github.com/kubewarden/rfc[RFCs] für das Projekt.
-* Eine Reihe von link:https://www.kubewarden.io/blog/[Blogbeiträgen], die sich auf {kw-community-project-name} Veröffentlichungen beziehen.
-* Artikel, die sich mit dem link:https://github.com/kubewarden/community[Community]-Management von {kw-community-project-name} befassen.
+* Eine Reihe von link:https://www.kubewarden.io/blog/[Blogbeiträgen], die sich auf {community-project-name} Veröffentlichungen beziehen.
+* Artikel, die sich mit dem link:https://github.com/kubewarden/community[Community]-Management von {community-project-name} befassen.
