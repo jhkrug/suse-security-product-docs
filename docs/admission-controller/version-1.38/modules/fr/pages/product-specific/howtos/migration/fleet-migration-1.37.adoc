@@ -4,6 +4,7 @@ include::partial$variables.adoc[]
 :page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2026-07-21
 :page-revdate: {revdate}
+:page-aliases: howtos/migration/fleet-migration-1.37.adoc
 :description: Migrate with Fleet from community v1.36 Helm charts to the SUSE Application Collection single Helm chart.
 :doc-persona: ["kubewarden-operator"]
 :doc-topic: ["chart-migration"]
