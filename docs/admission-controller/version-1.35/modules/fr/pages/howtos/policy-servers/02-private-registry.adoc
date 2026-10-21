@@ -38,7 +38,7 @@ kubectl --namespace kubewarden create secret docker-registry secret-ghcr-docker 
 [TIP]
 ====
 
-Étiquetez le Secret comme spécifié dans xref:/howtos/rancher-backup-operator.adoc#_user_secrets[User secrets] pour qu'il fasse partie des sauvegardes effectuées par Rancher Backup Operator
+Étiquetez le Secret comme spécifié dans xref:product-specific/howtos/rancher-backup-operator.adoc#_user_secrets[User secrets] pour qu'il fasse partie des sauvegardes effectuées par Rancher Backup Operator
 
 ====
 

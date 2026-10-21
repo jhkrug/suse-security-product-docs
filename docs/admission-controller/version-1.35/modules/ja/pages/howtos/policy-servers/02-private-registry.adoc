@@ -38,7 +38,7 @@ kubectl --namespace kubewarden create secret docker-registry secret-ghcr-docker 
 [TIP]
 ====
 
-シークレットにxref:/howtos/rancher-backup-operator.adoc#_user_secrets[ユーザーシークレット]で指定されたラベルを付けて、Rancher Backup Operatorによって行われるバックアップの一部にします。
+シークレットにxref:product-specific/howtos/rancher-backup-operator.adoc#_user_secrets[ユーザーシークレット]で指定されたラベルを付けて、Rancher Backup Operatorによって行われるバックアップの一部にします。
 
 ====
 

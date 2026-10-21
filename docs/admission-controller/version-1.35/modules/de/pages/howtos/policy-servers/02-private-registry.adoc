@@ -38,7 +38,7 @@ kubectl --namespace kubewarden create secret docker-registry secret-ghcr-docker 
 [TIP]
 ====
 
-Kennzeichnen Sie das Geheimnis wie in xref:/howtos/rancher-backup-operator.adoc#_user_secrets[User secrets] angegeben, damit es Teil der von Rancher Backup Operator durchgeführten Sicherungen ist.
+Kennzeichnen Sie das Geheimnis wie in xref:product-specific/howtos/rancher-backup-operator.adoc#_user_secrets[User secrets] angegeben, damit es Teil der von Rancher Backup Operator durchgeführten Sicherungen ist.
 
 ====
 
