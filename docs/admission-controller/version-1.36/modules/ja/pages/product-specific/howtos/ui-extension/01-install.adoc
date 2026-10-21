@@ -74,7 +74,7 @@ xref:product-specific/howtos/ui-extension/02-metrics.adoc[モニタリング]ま
 . https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/kubernetes-resources-setup/secrets[作成] `cattle-ui-plugin-system`ネームスペース内にレジストリシークレットを作成します。*レジストリドメイン名*フィールドにイメージアドレスのドメインを入力してください。
 . *拡張機能*ページに戻ります（例：`https://cluster-ip/dashboard/c/local/uiplugins`）。
 . 右上で、*拡張カタログの管理*を選択します。image:product-specific/ui_airgap_01.png[カタログの管理]
-. ［*インポート拡張カタログ*］ボタンを選択します。 \image:product-specific/ui_airgap_02.png[インポートカタログ]
+. ［*インポート拡張カタログ*］ボタンを選択します。 image:product-specific/ui_airgap_02.png[インポートカタログ]
 . *カタログイメージ参照*フィールドに画像アドレスを入力します。
 . *プルシークレット*ドロップダウンメニューから、先ほど作成したシークレットを選択します。image:product-specific/ui_airgap_03.png[カタログ情報を入力してください。]
 . ［*ロード*］をクリックします。拡張機能は現在、*保留中*です。

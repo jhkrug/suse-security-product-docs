@@ -74,13 +74,13 @@ Uma vez que esta imagem é espelhada para um registro acessível ao seu cluster 
 . https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/kubernetes-resources-setup/secrets[Criar] um segredo de registro dentro do namespace `cattle-ui-plugin-system`. Insira o domínio do endereço da imagem no campo *Nome do Domínio do Registro*.
 . Navegue de volta para a página *Extensões* (por exemplo, `https://cluster-ip/dashboard/c/local/uiplugins`).
 . No canto superior direito, selecione *Gerenciar Catálogos de Extensões*. image:product-specific/ui_airgap_01.png[Gerenciar Catálogos]
-. Selecione o botão *Importar Catálogo de Extensões*. imagem:ui_airgap_02.png[Importar Catálogos]
+. Selecione o botão *Importar Catálogo de Extensões*. image:product-specific/ui_airgap_02.png[Importar Catálogos]
 . Insira o endereço da imagem no campo *Referência da Imagem do Catálogo*.
 . Selecione o segredo que você acabou de criar no menu *Pull Secrets*.
   image:product-specific/ui_airgap_03.png[Insira as Informações do Catálogo]
 . Clique em *Carregar*. A extensão agora estará *Pendente*.
 . Volte para a página *Extensões*.
-. Selecione a aba *Disponíveis* e clique no botão *Recarregar* para garantir que a lista de extensões esteja atualizada. imagem:ui_airgap_04.png[Instalar
+. Selecione a aba *Disponíveis* e clique no botão *Recarregar* para garantir que a lista de extensões esteja atualizada. image:product-specific/ui_airgap_04.png[Instalar
   {short-project-name}]
 . Encontre a extensão {short-project-name} que você acabou de adicionar e selecione o botão
   *Instalar*.

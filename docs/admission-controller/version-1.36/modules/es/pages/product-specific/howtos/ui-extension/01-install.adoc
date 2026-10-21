@@ -76,10 +76,10 @@ Una vez que esta imagen se refleja en un registro accesible para tu clúster ais
 . https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/kubernetes-resources-setup/secrets[Crear] un secreto de registro dentro del espacio de nombres `cattle-ui-plugin-system`. Introduce el dominio de la dirección de la imagen en el campo *Nombre de dominio del registro*.
 . Navega de vuelta a la página *Extensiones* (por ejemplo, `https://cluster-ip/dashboard/c/local/uiplugins`).
 . En la parte superior derecha, selecciona *Gestionar catálogos de extensiones*. image:product-specific/ui_airgap_01.png[Gestionar catálogos]
-. Selecciona el botón *Importar Catálogo de Extensiones*. imagen:ui_airgap_02.png[Importar Catálogos]
+. Selecciona el botón *Importar Catálogo de Extensiones*. image:product-specific/ui_airgap_02.png[Importar Catálogos]
 . Introduce la dirección de la imagen en el campo *Referencia de Imagen del Catálogo*.
 . Selecciona el secreto que acabas de crear del menú desplegable *Secretos de extracción*. image:product-specific/ui_airgap_03.png[Introduce la información del catálogo]
 . Haz clic en *Cargar*. La extensión estará ahora en estado *Pendiente*.
 . Vuelve a la página de *Extensiones*.
-. Selecciona la pestaña *Disponibles*, y haz clic en el botón *Recargar* para asegurarte de que la lista de extensiones esté actualizada. imagen:ui_airgap_04.png[Instalar {admc-short-name}]
+. Selecciona la pestaña *Disponibles*, y haz clic en el botón *Recargar* para asegurarte de que la lista de extensiones esté actualizada. image:product-specific/ui_airgap_04.png[Instalar {admc-short-name}]
 . Encuentra la extensión {admc-short-name} que acabas de añadir, y selecciona el botón *Instalar*.
