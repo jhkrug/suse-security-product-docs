@@ -91,10 +91,10 @@ Helm-Repository mit dem {short-project-name} UI-Chart zur Installation.
   `https://cluster-ip/dashboard/c/local/uiplugins`).
 . Oben rechts wählen Sie *Erweiterungskataloge verwalten*.
   image:ui_airgap_01.png[Kataloge verwalten]
-. Wählen Sie die Schaltfläche *Import Erweiterungskatalog* aus. Bild:ui_airgap_02.png[Importkatalog]
+. Wählen Sie die Schaltfläche *Import Erweiterungskatalog* aus. image:ui_airgap_02.png[Importkatalog]
 . Geben Sie die Bildadresse im Feld *Katalogbildreferenz* ein.
 . Wählen Sie das soeben erstellte Geheimnis im Dropdown-Menü *Pull Secrets* aus. image:ui_airgap_03.png[Geben Sie Kataloginformationen ein]
 . Klicken Sie auf *Laden*. Die Erweiterung wird jetzt *Ausstehend* sein.
 . Kehren Sie zurück zur Seite *Erweiterungen*.
-. Wählen Sie die Registerkarte *Verfügbar* aus, und klicken Sie auf die Schaltfläche *Aktualisieren*, um sicherzustellen, dass die Liste der Erweiterungen auf dem neuesten Stand ist. Bild:ui_airgap_04.png[Installieren {short-project-name}]
+. Wählen Sie die Registerkarte *Verfügbar* aus, und klicken Sie auf die Schaltfläche *Aktualisieren*, um sicherzustellen, dass die Liste der Erweiterungen auf dem neuesten Stand ist. image:ui_airgap_04.png[Installieren {short-project-name}]
 . Suchen Sie die Erweiterung {short-project-name}, die Sie gerade hinzugefügt haben, und wählen Sie die Schaltfläche *Installieren* aus.

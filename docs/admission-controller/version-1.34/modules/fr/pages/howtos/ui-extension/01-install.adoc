@@ -73,7 +73,7 @@ Une fois que cette image est mise en miroir vers un dépôt accessible à votre 
 . https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/kubernetes-resources-setup/secrets[Créer] un secret de dépôt dans l'espace de noms `cattle-ui-plugin-system`. Entrez le domaine de l'adresse de l'image dans le champ *Nom de domaine du dépôt*.
 . Retournez à la page *Extensions* (par exemple, `https://cluster-ip/dashboard/c/local/uiplugins`).
 . En haut à droite, sélectionnez *Gérer les catalogues d'extensions*. image:ui_airgap_01.png[Gérer les catalogues]
-. Sélectionnez le bouton *Importer le catalogue d'extensions*. \image:ui_airgap_02.png[Importer les catalogues]
+. Sélectionnez le bouton *Importer le catalogue d'extensions*. image:ui_airgap_02.png[Importer les catalogues]
 . Entrez l'adresse de l'image dans le champ *Référence d'image du catalogue*.
 . Sélectionnez le secret que vous venez de créer dans le menu déroulant *Pull Secrets*. image:ui_airgap_03.png[Entrez les informations du catalogue]
 . Cliquez sur *Charger*. L'extension sera maintenant *En attente*.

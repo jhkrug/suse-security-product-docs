@@ -73,7 +73,7 @@ include::partial$variables.adoc[]
 . https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/kubernetes-resources-setup/secrets[创建]在`cattle-ui-plugin-system`名称空间内创建注册表密钥。在*注册表域名*字段中输入映像地址的域名。
 . 返回到*扩展*页面（例如，`https://cluster-ip/dashboard/c/local/uiplugins`）。
 . 在右上角，选择*管理扩展目录*。image:ui_airgap_01.png[管理目录]
-. 选择*导入扩展目录*按钮。 \image:ui_airgap_02.png[Import Catalogs]
+. 选择*导入扩展目录*按钮。 image:ui_airgap_02.png[Import Catalogs]
 . 在*目录图像参考*字段中输入图像地址。
 . 从*拉取密钥*下拉菜单中选择您刚刚创建的密钥。image:ui_airgap_03.png[输入目录信息]
 . 单击*加载*。扩展现在将处于*待处理*状态。
