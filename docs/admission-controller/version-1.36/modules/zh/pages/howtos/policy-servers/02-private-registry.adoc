@@ -38,7 +38,7 @@ kubectl --namespace kubewarden create secret docker-registry secret-ghcr-docker 
 [TIP]
 ====
 
-按照xref:/howtos/rancher-backup-operator.adoc#_user_secrets[User secrets]的要求标记 Secret，以便它可以成为 Rancher Backup Operator 执行的备份的一部分。
+按照xref:product-specific/howtos/rancher-backup-operator.adoc#_user_secrets[User secrets]的要求标记 Secret，以便它可以成为 Rancher Backup Operator 执行的备份的一部分。
 
 ====
 
