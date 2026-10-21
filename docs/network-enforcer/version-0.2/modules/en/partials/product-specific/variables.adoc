@@ -1,0 +1,4 @@
+// Here goes version specific, product-specific shared attributes and content
+
+// TODO: confirm the product chart. See follow-ups.adoc in the repository root.
+:network-enforcer-helm-chart: oci://dp.apps.rancher.io/charts/suse-security-network-enforcer

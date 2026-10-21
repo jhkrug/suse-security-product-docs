@@ -1,0 +1,17 @@
+// Product only: the integrations section of the compatibility page. The
+// community repository has a community-specific/compatibility-integrations.adoc.
+[#_rancher-integration]
+== Rancher Integration
+
+[cols="2,2,6"]
+|===
+|Rancher Version |Status |Notes
+
+|*2.12.x*
+|✓ Supported
+|Minimum supported version
+
+|*2.13.x - 2.15.x*
+|Expected
+|Fully tested
+|===

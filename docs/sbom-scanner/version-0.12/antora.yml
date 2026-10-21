@@ -1,0 +1,6 @@
+name: sbom-scanner
+title: Vulnerability Scanner
+version: "0.12"
+start_page: en:introduction.adoc
+nav:
+  - modules/en/nav.adoc

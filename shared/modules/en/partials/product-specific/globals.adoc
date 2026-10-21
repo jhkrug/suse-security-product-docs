@@ -1,0 +1,60 @@
+// Product specific global attributes. In scope for all components of
+// SUSE Security. The shared globals.adoc holds only the community names. This
+// file defines the product names and selects them for this build. The
+// community repository has a community-specific/globals.adoc that selects the
+// community names. The product names have no abbreviations.
+
+// Product name.
+:product-project-name: SUSE Security
+
+// Admission Controller.
+:admc-product-name: {product-project-name} Admission Controller
+:admc-product-short-name: Admission Controller
+
+// Compliance Operator.
+:co-product-name: {product-project-name} Compliance Operator
+:co-product-short-name: Compliance Operator
+
+// Network Enforcer.
+:ne-product-name: {product-project-name} Network Enforcer
+:ne-product-short-name: Network Enforcer
+
+// Runtime Enforcer.
+:rte-product-name: {product-project-name} Runtime Enforcer
+:rte-product-short-name: Runtime Enforcer
+
+// SBOM Scanner.
+:sboms-product-name: {product-project-name} Vulnerability Scanner
+:sboms-product-short-name: Vulnerability Scanner
+
+// Web Application Firewall.
+:waf-product-name: {product-project-name} Web Application Firewall
+:waf-product-short-name: Web Application Firewall
+
+// Select the product names for this build.
+:admc-name: {admc-product-name}
+:admc-short-name: {admc-product-short-name}
+
+:co-name: {co-product-name}
+:co-short-name: {co-product-short-name}
+
+:ne-name: {ne-product-name}
+:ne-short-name: {ne-product-short-name}
+
+:rte-name: {rte-product-name}
+:rte-short-name: {rte-product-short-name}
+
+:sboms-name: {sboms-product-name}
+:sboms-short-name: {sboms-product-short-name}
+
+:waf-name: {waf-product-name}
+:waf-short-name: {waf-product-short-name}
+
+// The product security team, used by the security disclosure pages.
+:project-security-team: {product-project-name} Team
+
+// The documentation repository and team, used by the contribution guide.
+// Changes to the documentation go to the upstream community repository.
+:docs-repo-name: kubewarden/docs
+:docs-repo-url: https://github.com/{docs-repo-name}
+:docs-team-url: https://github.com/orgs/kubewarden/teams/kubewarden-documentation

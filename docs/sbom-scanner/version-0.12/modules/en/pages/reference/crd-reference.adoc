@@ -1,0 +1,18 @@
+include::partial$variables.adoc[]
+
+= CRD Reference
+:revdate: 2026-09-22
+:page-revdate: {revdate}
+:description: API reference for {sboms-name} Custom Resource Definitions.
+:doc-persona: ["kubewarden-operator"]
+:doc-topic: ["operator-manual", "crd"]
+:doc-type: ["reference"]
+:doctype: book
+
+////
+API REFERENCE GOES BELOW.
+Generated from the v0.12.1 release of kubewarden/sbomscanner.
+Do not edit partials/crd-reference.adoc by hand.
+////
+
+include::partial$crd-reference.adoc[]

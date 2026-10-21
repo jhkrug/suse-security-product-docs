@@ -1,0 +1,13 @@
+// Here goes version specific, product-specific shared attributes and content
+
+// TODO: confirm the product chart. See follow-ups.adoc in the repository root.
+:network-enforcer-helm-chart: oci://dp.apps.rancher.io/charts/suse-security-network-enforcer
+
+// The project origin sentence, used by the introduction page. The product
+// text states that the component is part of the Kubewarden project.
+:intro-paragraph: {ne-name} is part of link:https://kubewarden.io[{community-project-name}], a vendor neutral, https://cncf.io[CNCF] Sandbox project, originally created by https://www.rancher.com/[SUSE Rancher].
+
+// Current upstream release tag and published Helm chart version.
+// This assumes the product versions are the same as upstream.
+:release-tag: v0.2.0
+:chart-version: 0.1.2
