@@ -120,12 +120,12 @@ endif::[]
 *** xref:howtos/telemetry/40-custom-otel-collector.adoc[]
 ** xref:howtos/Rancher-Fleet.adoc[Fleet con Rancher]
 ** Extensión de la interfaz de usuario de Rancher
-*** xref:howtos/ui-extension/01-install.adoc[Quickstart]
-*** xref:howtos/ui-extension/02-metrics.adoc[]
-*** xref:howtos/ui-extension/03-tracing.adoc[]
+*** xref:product-specific/howtos/ui-extension/01-install.adoc[Quickstart]
+*** xref:product-specific/howtos/ui-extension/02-metrics.adoc[]
+*** xref:product-specific/howtos/ui-extension/03-tracing.adoc[]
 ** Colección de aplicaciones de Rancher
-*** xref:howtos/application-collection/01-verify-images.adoc[Verificar imágenes]
-** xref:howtos/rancher-backup-operator.adoc[Rancher Backup Operator]
+*** xref:product-specific/howtos/application-collection/01-verify-images.adoc[Verificar imágenes]
+** xref:product-specific/howtos/rancher-backup-operator.adoc[Rancher Backup Operator]
 ** xref:howtos/kubestellar-console.adoc[KubeStellar Console guided installation]
 ** Soluciones
 *** xref:howtos/workarounds/policy-server-certificate-expiry.adoc[Rotación de certificados, versiones ≥ v1.16]

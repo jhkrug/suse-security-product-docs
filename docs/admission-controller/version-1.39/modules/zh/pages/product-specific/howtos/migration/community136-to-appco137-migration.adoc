@@ -3,6 +3,7 @@ include::partial$variables.adoc[]
 :page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2026-07-08
 :page-revdate: {revdate}
+:page-aliases: howtos/migration/community136-to-appco137-migration.adoc
 :description: Migrate from the community kubewarden-crds, kubewarden-controller, and kubewarden-defaults Helm charts to the SUSE Application Collection suse-security-admission-controller single chart.
 :doc-persona: ["kubewarden-operator"]
 :doc-topic: ["chart-migration", "application-collection"]
