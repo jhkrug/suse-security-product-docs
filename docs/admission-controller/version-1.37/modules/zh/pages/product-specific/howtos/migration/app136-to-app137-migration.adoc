@@ -3,6 +3,7 @@ include::partial$variables.adoc[]
 :page-languages: [en, de, es, fr, ja, pt, zh]
 :revdate: 2026-07-16
 :page-revdate: {revdate}
+:page-aliases: howtos/migration/app136-to-app137-migration.adoc
 :description: Migrate from the SUSE Application Collection suse-security-admission-controller 0.8.0 umbrella chart (three subcharts) to the 1.0.0 flat single chart.
 :doc-persona: ["kubewarden-operator"]
 :doc-topic: ["chart-migration", "application-collection", "appco-upgrade"]

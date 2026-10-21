@@ -111,12 +111,12 @@ include::partial$variables.adoc[]
 *** xref:howtos/telemetry/40-custom-otel-collector.adoc[]
 ** xref:howtos/Rancher-Fleet.adoc[Rancher Fleet]
 ** Rancher UI-Erweiterung
-*** xref:howtos/ui-extension/01-install.adoc[Quickstart]
-*** xref:howtos/ui-extension/02-metrics.adoc[]
-*** xref:howtos/ui-extension/03-tracing.adoc[]
+*** xref:product-specific/howtos/ui-extension/01-install.adoc[Quickstart]
+*** xref:product-specific/howtos/ui-extension/02-metrics.adoc[]
+*** xref:product-specific/howtos/ui-extension/03-tracing.adoc[]
 ** Rancher Anwendungssammlung
-*** xref:howtos/application-collection/01-verify-images.adoc[Images überprüfen]
-** xref:howtos/rancher-backup-operator.adoc[Rancher Backup Operator]
+*** xref:product-specific/howtos/application-collection/01-verify-images.adoc[Images überprüfen]
+** xref:product-specific/howtos/rancher-backup-operator.adoc[Rancher Backup Operator]
 ** xref:howtos/kubestellar-console.adoc[KubeStellar Console guided installation]
 ** Migrations
 *** xref:product-specific/howtos/migration/community137-to-appco137-migration.adoc[]
