@@ -30,11 +30,11 @@ The two are separate only because of community and product concerns:
 The product repository is a copy of the upstream repository plus a small
 product layer.
 
-- A script and a GitHub Action (not written yet) copy the upstream content to
-  this repository. They copy the content under `docs/` and `shared/`, except
-  the `community-specific/` directories. They do not copy the upstream
-  tooling, for example `scripts/`, `.github/`, and `updatecli/`. Each
-  repository has its own.
+- `scripts/sync.py` and the `Sync with kubewarden/docs` workflow copy the
+  upstream content to this repository. They copy the content under `docs/`
+  and `shared/`, except the `community-specific/` directories. They do not
+  copy the upstream tooling, for example `scripts/`, `.github/`, and
+  `updatecli/`. Each repository has its own.
 - The product layer is in `product-specific/` directories. The shared pages
   include build specific content with `{build-type}-specific/`. The playbooks
   set `build-type: product`, so the product build uses the product files.
@@ -64,7 +64,7 @@ playbooks in this repository are for local builds and previews.
   language modules as placeholders, add them to the language navs, and remove
   pages that no longer exist in English.
 
-`follow-ups.adoc` tracks the open items.
+[follow-ups.md](follow-ups.md) tracks the open items.
 
 ### Sync script
 
@@ -104,6 +104,9 @@ request is a draft when the report lists work for a person or the build has
 errors or missing attributes. Run it from the Actions tab or with
 `gh workflow run sync.yml`. The `plan_only` input writes the plan to the run
 summary without a branch or pull request.
+
+[what-can-go-wrong.md](what-can-go-wrong.md) describes how the sync can fail
+or give a wrong result, and how you find out.
 
 ### Why copy and sync
 
