@@ -1,0 +1,151 @@
+name: Sync with kubewarden/docs
+# Runs scripts/sync.py: plans the sync with the upstream kubewarden/docs and,
+# when there are upstream changes, applies them on a sync/kubewarden-<sha>
+# branch, builds the site, and opens a pull request with the report.
+on:
+  workflow_dispatch:
+    inputs:
+      head:
+        description: Upstream ref or commit to sync to
+        type: string
+        default: main
+        required: true
+      plan_only:
+        description: Write the plan only, without a branch or pull request
+        type: boolean
+        default: false
+concurrency:
+  group: upstream-sync
+  cancel-in-progress: false
+permissions:
+  contents: write
+  pull-requests: write
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: Plan
+        id: plan
+        env:
+          HEAD_REF: ${{ inputs.head }}
+        run: |
+          set +e
+          scripts/sync.py plan --head "$HEAD_REF" --output "$RUNNER_TEMP/plan.md"
+          status=$?
+          set -e
+          [ "$status" -ne 1 ] || exit 1
+          cat "$RUNNER_TEMP/plan.md" >> "$GITHUB_STEP_SUMMARY"
+          if [ "$status" -eq 2 ]; then
+            echo "changes=true" >> "$GITHUB_OUTPUT"
+            echo "head=$(sed -n 's/^- Upstream head: `\([0-9a-f]*\)`$/\1/p' "$RUNNER_TEMP/plan.md")" >> "$GITHUB_OUTPUT"
+            echo "branch=$(sed -n 's/^- Branch: `\(.*\)`$/\1/p' "$RUNNER_TEMP/plan.md")" >> "$GITHUB_OUTPUT"
+          else
+            echo "changes=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Apply
+        id: apply
+        if: steps.plan.outputs.changes == 'true' && !inputs.plan_only
+        env:
+          HEAD_SHA: ${{ steps.plan.outputs.head }}
+          BRANCH: ${{ steps.plan.outputs.branch }}
+        run: |
+          git switch -c "$BRANCH"
+          set +e
+          scripts/sync.py apply --head "$HEAD_SHA" --no-fetch --output "$RUNNER_TEMP/sync.md"
+          status=$?
+          set -e
+          [ "$status" -ne 1 ] || exit 1
+          echo "manual=$([ "$status" -eq 3 ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+
+      - name: Commit
+        if: steps.apply.outcome == 'success'
+        env:
+          HEAD_REF: ${{ inputs.head }}
+          HEAD_SHA: ${{ steps.plan.outputs.head }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -s -q -m "Sync with kubewarden/docs $HEAD_REF ($HEAD_SHA)" \
+            -m "Made with scripts/sync.py apply by $RUN_URL"
+
+      - name: Install Node.js
+        if: steps.apply.outcome == 'success'
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "24"
+
+      - name: Build
+        id: build
+        if: steps.apply.outcome == 'success'
+        run: |
+          set +e
+          make product-local > "$RUNNER_TEMP/make.log" 2>&1
+          status=$?
+          set -e
+          mkdir -p tmp && touch tmp/build.log
+          errors=$(grep -ciE 'error|fatal' tmp/build.log || true)
+          missing=$(grep -c 'missing attribute' tmp/build.log || true)
+          {
+            echo "## Build"
+            echo
+            echo "\`make product-local\`: exit status $status, $errors error lines, $missing missing attribute warnings."
+            if [ "$errors" -gt 0 ] || [ "$missing" -gt 0 ]; then
+              echo
+              echo '```'
+              grep -iE 'error|fatal|missing attribute' tmp/build.log | head -50
+              echo '```'
+            fi
+          } > "$RUNNER_TEMP/build.md"
+          cat "$RUNNER_TEMP/build.md" >> "$RUNNER_TEMP/sync.md"
+          cat "$RUNNER_TEMP/build.md" >> "$GITHUB_STEP_SUMMARY"
+          ok=$([ "$status" -eq 0 ] && [ "$errors" -eq 0 ] && [ "$missing" -eq 0 ] && echo true || echo false)
+          echo "ok=$ok" >> "$GITHUB_OUTPUT"
+
+      - name: Push and open pull request
+        if: steps.apply.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HEAD_REF: ${{ inputs.head }}
+          HEAD_SHA: ${{ steps.plan.outputs.head }}
+          BRANCH: ${{ steps.plan.outputs.branch }}
+          DRAFT: ${{ steps.apply.outputs.manual == 'true' || steps.build.outputs.ok != 'true' }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          COMPARE_URL: ${{ github.server_url }}/${{ github.repository }}/compare/main...${{ steps.plan.outputs.branch }}?expand=1
+        run: |
+          git push --force origin "$BRANCH"
+          body="$RUNNER_TEMP/body.md"
+          {
+            echo "Made with \`scripts/sync.py apply\` by the [sync workflow]($RUN_URL)."
+            if [ "$DRAFT" = "true" ]; then
+              echo "It is a draft because the report lists work for a person or the build has problems."
+            fi
+            echo
+            cat "$RUNNER_TEMP/sync.md"
+          } > "$body"
+          if [ "$(wc -c < "$body")" -gt 60000 ]; then
+            head -c 60000 "$body" > "$body.cut"
+            printf '\n\n(Cut. See the workflow run for the full plan.)\n' >> "$body.cut"
+            mv "$body.cut" "$body"
+          fi
+          title="Sync with kubewarden/docs $HEAD_REF ($HEAD_SHA)"
+          pr=$(gh pr list --head "$BRANCH" --state open --json number --jq '.[0].number')
+          if [ -n "$pr" ]; then
+            gh pr edit "$pr" --title "$title" --body-file "$body"
+            echo "Updated pull request #$pr." >> "$GITHUB_STEP_SUMMARY"
+          else
+            args=(--base main --head "$BRANCH" --title "$title" --body-file "$body")
+            [ "$DRAFT" != "true" ] || args+=(--draft)
+            if url=$(gh pr create "${args[@]}"); then
+              echo "Opened $url" >> "$GITHUB_STEP_SUMMARY"
+            else
+              echo "Could not open the pull request. Open it from $COMPARE_URL" >> "$GITHUB_STEP_SUMMARY"
+            fi
+          fi
