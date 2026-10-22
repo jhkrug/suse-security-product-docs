@@ -36,6 +36,8 @@ For why this repository exists and the design choices behind it, see
 - `scripts/` and `.github/`: tooling and workflows for this repository, for
   example the sync script. Upstream has its own `scripts/` and `.github/`
   for the community repository. The sync does not copy them.
+- `.upstream-ref`: the upstream commit of the last sync. A sync commit
+  updates it. `scripts/sync.py` syncs from it.
 - `follow-ups.adoc`: open questions and known issues.
 
 The automated translation process writes the localized content, the language

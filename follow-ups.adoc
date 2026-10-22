@@ -81,6 +81,10 @@ translation run.
 
 == Build and publishing
 
+* *Sync: GitHub Action.* `scripts/sync.py` plans and applies a sync,
+  including the items below, and lists what needs a person. Next: a GitHub
+  Action that runs `apply` on a schedule, builds the site, and opens a sync
+  pull request with the report as its body.
 * *Sync: translations.* Only `admission-controller` 1.34 to 1.39 have
   translations (de, es, fr, ja, pt, zh). The `nav:` list of the `antora.yml`
   of each of these versions also lists the language navs. The sync must keep

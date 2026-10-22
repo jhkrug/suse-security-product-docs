@@ -66,6 +66,36 @@ playbooks in this repository are for local builds and previews.
 
 `follow-ups.adoc` tracks the open items.
 
+### Sync script
+
+`scripts/sync.py` does the sync. `.upstream-ref` holds the upstream commit
+of the last sync. The script compares the upstream changes since that commit
+with this repository.
+
+- `plan` writes a Markdown plan and changes nothing.
+- `apply` makes the changes in the working tree, stages them, and updates
+  `.upstream-ref`. It does not commit. It writes the same report, which can
+  be the body of the sync pull request.
+- `copies` copies the English variables partials to the language modules.
+  Run it after you change a product `variables.adoc`.
+
+`apply` copies the upstream changes, keeps the product lines of
+`antora.yml`, merges files changed on both sides with `git merge-file`,
+follows the English changes in the language modules, and bumps the release
+tags. It leaves the rest for a person and lists it in the report: merge
+conflicts, product files to write, upstream tooling changes, and stale
+translations. A translated page can still use an attribute that upstream
+renamed. The build log shows these as missing attributes.
+
+```bash
+scripts/sync.py plan --output tmp/plan.md
+scripts/sync.py apply --output tmp/sync.md
+```
+
+Exit status: `plan` returns 0 when there are no upstream changes and 2 when
+there are. `apply` returns 0 when it is done and 3 when the report lists
+work for a person.
+
 ### Why copy and sync
 
 The product side receives all the upstream content, but it is likely to need
