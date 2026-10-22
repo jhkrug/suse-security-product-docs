@@ -96,6 +96,15 @@ Exit status: `plan` returns 0 when there are no upstream changes and 2 when
 there are. `apply` returns 0 when it is done and 3 when the report lists
 work for a person.
 
+The `Sync with kubewarden/docs` workflow, `.github/workflows/sync.yml`, runs
+the script on demand. It plans the sync and, when there are upstream changes,
+applies them on a `sync/kubewarden-<sha>` branch, builds the site with
+`make product-local`, and opens a pull request with the report. The pull
+request is a draft when the report lists work for a person or the build has
+errors or missing attributes. Run it from the Actions tab or with
+`gh workflow run sync.yml`. The `plan_only` input writes the plan to the run
+summary without a branch or pull request.
+
 ### Why copy and sync
 
 The product side receives all the upstream content, but it is likely to need
