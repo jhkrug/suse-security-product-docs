@@ -12,7 +12,7 @@ Both compare three trees:
 - head: the upstream commit to sync to, by default the tip of main
 - local: this repository, HEAD
 
-The rules come from PRODUCT-consideration.md and AGENTS.md:
+The rules come from process-docs/PRODUCT-consideration.md and AGENTS.md:
 
 - copy the upstream changes under docs/ and shared/, without
   community-specific/

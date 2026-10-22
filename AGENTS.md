@@ -12,7 +12,7 @@ to the copied files.
 Do not change files here unless they are in the list below.
 
 For why this repository exists and the design choices behind it, see
-[PRODUCT-consideration.md](PRODUCT-consideration.md).
+[process-docs/PRODUCT-consideration.md](process-docs/PRODUCT-consideration.md).
 
 ## What belongs here
 
@@ -38,7 +38,11 @@ For why this repository exists and the design choices behind it, see
   for the community repository. The sync does not copy them.
 - `.upstream-ref`: the upstream commit of the last sync. A sync commit
   updates it. `scripts/sync.py` syncs from it.
-- `follow-ups.adoc`: open questions and known issues.
+- `process-docs/`: notes about this repository and its processes:
+  - `PRODUCT-consideration.md`: why this repository exists, and the design
+    of the sync.
+  - `follow-ups.md`: open questions and known issues.
+  - `what-can-go-wrong.md`: how the sync can fail, and how it is reported.
 
 The automated translation process writes the localized content, the language
 modules other than `en`. Do not edit the translations. Until a page is
