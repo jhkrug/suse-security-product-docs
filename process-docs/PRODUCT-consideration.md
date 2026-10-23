@@ -83,8 +83,10 @@ with this repository.
 `antora.yml`, merges files changed on both sides with `git merge-file`,
 follows the English changes in the language modules, and bumps the release
 tags. It leaves the rest for a person and lists it in the report: merge
-conflicts, product files to write, upstream tooling changes, and stale
-translations. A translated page can still use an attribute that upstream
+conflicts, product files and attributes to write, new components, upstream
+build changes, translated pages deleted upstream, and stale translations. A
+new component version gets the product `title:` and a copy of the product
+layer of the version before it. A translated page can still use an attribute that upstream
 renamed. The build log shows these as missing attributes.
 
 ```bash

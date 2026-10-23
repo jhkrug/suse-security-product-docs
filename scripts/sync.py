@@ -51,6 +51,14 @@ from pathlib import Path
 UPSTREAM_URL = "https://github.com/kubewarden/docs.git"
 CONTENT_ROOTS = ("docs", "shared")
 TOOLING_EXCLUDE = (".agents/", ".claude/", "archived-docs/", "tests/")
+# Upstream files outside the content that affect a build like the product
+# build. Changes to them need a person; other tooling changes are listed only.
+BUILD_FILES = ("package.json", "package-lock.json", "Makefile", ".gitmodules", "docs-common")
+BUILD_DIRS = ("ui/", "kw-community-docs-supp-files/")
+PLAYBOOKS = ("local-product-playbook.yml", "remote-product-playbook.yml")
+# Rename detection threshold. Lower than the git default of 50%, so that more
+# pages that move and change are seen as moves, and their translations move.
+RENAME_THRESHOLD = "-M40%"
 MODULE_RE = re.compile(r"^(docs/[^/]+/[^/]+)/modules/([^/]+)/(.+)$")
 VERSION_DIR_RE = re.compile(r"^(docs/[^/]+)/(version-[^/]+)/")
 LANG_NAV_RE = re.compile(r"^\s*-\s*modules/(?!en/)[^/]+/nav\.adoc\s*$")
@@ -68,7 +76,8 @@ SECTIONS = [
     ("Manual follow-up", "The script cannot do these.", True),
     ("Stale translations", "Translated pages whose English page changes. The translation process updates them.", False),
     ("Product layer", "Upstream changed community-specific files. The product counterparts exist. Check them.", False),
-    ("Upstream tooling to review", "Not copied. Check whether the product build needs the same change.", False),
+    ("Upstream build changes", "Not copied. They change how upstream builds. Check whether the product build needs the same change.", True),
+    ("Upstream tooling to review", "Not copied. Other upstream files outside the content.", False),
     ("Already applied", None, False),
     ("Out-of-date language copies", "Language copies of variables partials that differ from the English file. apply and copies refresh them.", False),
     ("Local differences", "Differences from upstream at head, outside the product layer, the translations, and the product antora.yml lines.", False),
@@ -181,6 +190,16 @@ def attr_renames(before, after):
     return {x: ys.pop() for x, ys in found.items() if len(ys) == 1}
 
 
+def all_attrs(content):
+    """Map name -> value for the attribute definitions in content."""
+    found = {}
+    for line in content.splitlines():
+        m = re.match(r"^:([\w-]+):\s*(.*)$", line)
+        if m:
+            found[m.group(1)] = m.group(2).strip()
+    return found
+
+
 def attrs(content, names):
     found = {}
     for line in content.splitlines():
@@ -230,6 +249,10 @@ class Plan:
             if parts and parts[1] != "en":
                 self.langs[parts[0]].add(parts[1])
         self.sections = defaultdict(list)
+        self.added = set()
+        self.planned = set()  # files apply creates by copying, for new versions
+        self.new_vdirs = {}  # new version directory -> the version it copies from
+        self._product_attrs = {}
         # Operations for apply, as (phase, op, args...). Lower phases run first.
         self.ops = []
         self.has_changes = False
@@ -253,7 +276,7 @@ class Plan:
         return e and e[1]
 
     def changes(self):
-        out = git("diff", "--name-status", "-z", "-M", self.base, self.head, "--", *CONTENT_ROOTS)
+        out = git("diff", "--name-status", "-z", RENAME_THRESHOLD, self.base, self.head, "--", *CONTENT_ROOTS)
         fields = out.split("\0")
         i = 0
         while i < len(fields) and fields[i]:
@@ -398,14 +421,23 @@ class Plan:
         if not langs or not (rest.startswith("pages/") or rest.startswith("partials/")):
             return
         old_local = self.local_blob(path)
+        vdir = module_parts(path)[0]
+        name = path.rsplit("/", 1)[1]
+        candidates = [p for p in self.added if p.startswith(f"{vdir}/modules/en/") and p.endswith("/" + name)]
+        kept = []
         for lang in langs:
             lpath = to_lang(path, lang)
             lblob = self.local_blob(lpath)
             if lblob is None:
                 continue
-            self.op(3, "rm", lpath)
-            kind = "placeholder" if lblob == old_local else "translated page"
-            self.add("Translations", f"delete {kind} `{lpath}`")
+            if lblob == old_local:
+                self.op(3, "rm", lpath)
+                self.add("Translations", f"delete placeholder `{lpath}`")
+            else:
+                kept.append(lang)
+        if kept:
+            hint = f" If it moved, move the translations to the new path, for example `{candidates[0]}`." if candidates else " If it moved, move the translations to the new path."
+            self.add("Manual follow-up", f"`{path}` is deleted upstream, but it is translated in {', '.join(kept)}. The translations are kept: delete them, or keep them for a moved page.{hint}")
 
     def translations_move(self, old, new, changed, old_local):
         rest, langs = self.lang_targets(old)
@@ -460,6 +492,14 @@ class Plan:
             old = attrs(text(self.base, path), names) if path in self.u0 else {}
             new = attrs(text(self.head, path), names)
             product = path.replace("/community-specific/", "/product-specific/")
+            if product in self.planned:
+                src = next(op[2] for op in self.ops if op[1] == "copy" and op[3] == product)
+                current = attrs(text(self.local, src), names)
+                for name in names:
+                    if name in new and name in current and current[name] != new[name]:
+                        self.op(4, "setattr", product, name, new[name])
+                        self.add("Release tags", f"`{product}` (new version): set `{name}` from `{current[name]}` to `{new[name]}`")
+                continue
             current = attrs(text(self.local, product), names) if product in self.lt else {}
             for name in names:
                 if name not in new or old.get(name) == new[name]:
@@ -475,10 +515,64 @@ class Plan:
                     note = "" if current[name] == old.get(name) else f" (upstream was `{old.get(name)}`)"
                     self.add("Release tags", f"`{product}`: set `{name}` from `{current[name]}` to `{new[name]}`{note}")
 
+    # Attributes in community-specific files ------------------------------
+
+    def product_attrs(self, path):
+        """Attribute names the product build defines for the version of path, and where.
+
+        Looks in the product-specific files and the shared partials, in English.
+        The shared partials come from upstream, so it reads them as they are
+        after the sync.
+        """
+        m = VERSION_DIR_RE.match(path)
+        scopes = ("shared/",) + ((m.group(0),) if m else ())
+        key = scopes[-1]
+        if key not in self._product_attrs:
+            found = {}
+            for p in sorted(set(self.lt) | set(self.u1)):
+                parts = module_parts(p)
+                if not (p.startswith(scopes) and p.endswith(".adoc") and (parts is None or parts[1] == "en")):
+                    continue
+                if is_product(p) and p in self.lt:
+                    content = text(self.local, p)
+                elif "/partials/" in p and not is_community(p) and not is_product(p) and p in self.u1:
+                    content = text(self.head, p)
+                else:
+                    continue
+                for name in all_attrs(content):
+                    found.setdefault(name, p)
+            self._product_attrs[key] = found
+        return self._product_attrs[key]
+
+    def attribute_changes(self, status, old, path):
+        if status == "D" or not path.endswith(".adoc"):
+            return
+        before_path = old if status == "R" else path
+        before = all_attrs(text(self.base, before_path)) if before_path in self.u0 else {}
+        after = all_attrs(text(self.head, path))
+        product = path.replace("/community-specific/", "/product-specific/")
+        defined = self.product_attrs(path)
+        m = VERSION_DIR_RE.match(path)
+        vdir = m.group(0).rstrip("/") if m else None
+        if vdir in self.new_vdirs:
+            # A new version: compare with the version it copies from.
+            src_path = self.new_vdirs[vdir] + path[len(vdir):]
+            before = all_attrs(text(self.head, src_path)) if src_path in self.u1 else {}
+            defined = self.product_attrs(src_path)
+        for name in sorted(set(after) - set(before)):
+            if name in ("release-tag", "chart-version") or name in defined:
+                continue
+            self.add("Manual follow-up", f"upstream adds `:{name}:` to `{path}` (value `{after[name]}`): no product file defines it. Add it, for example to `{product}`")
+        for name in sorted(set(before) - set(after)):
+            if name in defined:
+                self.add("Product layer", f"upstream removes `:{name}:` from `{path}`; `{defined[name]}` still defines it. Remove it if nothing uses it")
+
     # Product layer -------------------------------------------------------
 
     def product_layer(self, status, old, path):
         product = path.replace("/community-specific/", "/product-specific/")
+        if product in self.planned:
+            return  # a new version: the copied product layer is reviewed as a whole
         exists = product in self.lt
         if status == "D":
             if exists:
@@ -504,13 +598,36 @@ class Plan:
             comp = vdir.rsplit("/", 1)[0]
             older = sorted((v for v in local if v.startswith(comp + "/") and version_key(v) < version_key(vdir)), key=version_key)
             if not older:
-                self.add("Manual follow-up", f"`{vdir}` is new: create its product-specific layer")
+                self.new_component(comp, vdir)
                 continue
             src = older[-1]
+            self.new_vdirs[vdir] = src
             files = sorted(p for p in self.lt if p.startswith(src + "/") and is_product(p) and module_parts(p) and module_parts(p)[1] == "en")
             for p in files:
                 self.op(3, "copy", p, vdir + p[len(src):])
+                self.planned.add(vdir + p[len(src):])
             self.add("Manual follow-up", f"`{vdir}` is new: its product-specific layer is copied from `{src}` ({len(files)} files). Review the values")
+            self.product_title(vdir, src)
+
+    def product_title(self, vdir, src):
+        """Give a new component version the product title of the version before it."""
+        path, src_path = f"{vdir}/antora.yml", f"{src}/antora.yml"
+        if path not in self.u1 or src_path not in self.lt:
+            return
+        title = next((l for l in text(self.local, src_path).splitlines() if l.startswith("title:")), None)
+        upstream = text(self.head, path)
+        if not title or title in upstream.splitlines():
+            return
+        content = "\n".join(title if l.startswith("title:") else l for l in upstream.splitlines())
+        self.op(3, "write", path, (content + ("\n" if upstream.endswith("\n") else "")).encode())
+        self.add("Apply", f"set the product `{title}` in `{path}`, as in `{src_path}`")
+
+    def new_component(self, comp, vdir):
+        self.add("Manual follow-up", f"`{vdir}` is in a new component, `{comp}`: create its product-specific layer, and decide its product `title:`")
+        pattern = f"{comp}/version-*"
+        for playbook in PLAYBOOKS:
+            if playbook in git("ls-tree", "--name-only", self.local).split() and pattern not in text(self.local, playbook):
+                self.add("Manual follow-up", f"`{playbook}` does not build `{pattern}`: add it to `start_paths`, and to `product-docs-playbook`")
 
     # Tooling -------------------------------------------------------------
 
@@ -518,8 +635,23 @@ class Plan:
         out = git("diff", "--name-status", self.base, self.head, "--", ".", *(f":!{r}" for r in CONTENT_ROOTS))
         for line in out.splitlines():
             status, path = line.split("\t", 1)
-            if not path.startswith(TOOLING_EXCLUDE):
+            if path.startswith(TOOLING_EXCLUDE):
+                continue
+            if path == "docs-common":
+                self.add("Upstream build changes", self.docs_common())
+            elif path in BUILD_FILES or path.startswith(BUILD_DIRS) or path.endswith("playbook.yml"):
+                self.add("Upstream build changes", f"{status} `{path}`")
+            else:
                 self.add("Upstream tooling to review", f"{status} `{path}`")
+
+    def docs_common(self):
+        """Compare the upstream docs-common bump with product-docs-common."""
+        def commit(rev, path):
+            out = git("ls-tree", rev, "--", path).split()
+            return out[2][:10] if len(out) > 2 else "none"
+        old, new, ours = commit(self.base, "docs-common"), commit(self.head, "docs-common"), commit(self.local, "product-docs-common")
+        note = "the same" if ours == new else f"`{ours}`; consider the same bump"
+        return f"`docs-common` (rancher/product-docs-common) moves from `{old}` to `{new}`. `product-docs-common` here is {note}"
 
     # Checks on the local tree --------------------------------------------
 
@@ -557,15 +689,18 @@ class Plan:
     # Build ---------------------------------------------------------------
 
     def build(self):
-        for status, old, path in self.changes():
+        changes = list(self.changes())
+        self.added = {path for status, _, path in changes if status == "A"}
+        self.new_versions()
+        for status, old, path in changes:
             if is_community(path) and (old is None or is_community(old)):
                 self.has_changes = True
                 self.product_layer(status, old, path)
+                self.attribute_changes(status, old, path)
                 continue
             self.has_changes = True
             self.classify(status, old, path)
         self.release_bumps()
-        self.new_versions()
         self.tooling()
         self.language_copies()
         self.local_differences()
