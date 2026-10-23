@@ -11,14 +11,19 @@
 # has no FATAL, ERROR, or missing attribute entries. Other warnings are
 # reported but do not fail the check. Exits 1 otherwise.
 #
-# Usage: scripts/build-report.sh <build log> <make exit status> [make output]
+# With an attention file, it also writes one Markdown bullet for each problem
+# that fails the check, for the top of the sync pull request.
+#
+# Usage: scripts/build-report.sh <build log> <make exit status> [make output] [attention file]
 
 set -euo pipefail
 
 log="${1:?build log required}"
 status="${2:?make exit status required}"
 make_out="${3:-}"
+attention="${4:-}"
 max_lines=60
+max_items=20
 root="$(git rev-parse --show-toplevel 2>/dev/null || pwd)/"
 
 # Print the entries whose first line contains the pattern, with their
@@ -50,6 +55,47 @@ block() {
   echo
   echo "</details>"
 }
+
+# Write the attention bullets: one for each FATAL and ERROR entry, with its
+# file, and one for each missing attribute name.
+write_attention() {
+  [ -n "$attention" ] || return 0
+  {
+    if [ ! -s "$log" ]; then
+      echo "- **Build:** the build log is missing or empty, so the build cannot be checked. See **Build**."
+      return
+    fi
+    if [ "$status" -ne 0 ]; then
+      echo "- **Build:** \`make product-local\` exited with status $status. See **Build**."
+    fi
+    {
+      awk '
+        function flush() { if (msg != "") { print "- **Build:** " msg (file != "" ? " (`" file "`)" : ""); msg = ""; file = "" } }
+        /^\[/ {
+          flush()
+          if (match($0, /\] (FATAL|ERROR) \([^)]*\): /)) {
+            level = substr($0, RSTART + 2, RLENGTH - 2); sub(/ \(.*/, "", level)
+            msg = level " " substr($0, RSTART + RLENGTH)
+          }
+          next
+        }
+        msg != "" && /^ +file: / { file = $0; sub(/^ +file: /, "", file) }
+        END { flush() }
+      ' "$log" | relative
+      grep -F '] WARN (' "$log" | grep -oE 'missing attribute: [A-Za-z0-9_-]+' |
+        sed 's/missing attribute: //' | sort | uniq -c | sort -rn |
+        awk '{ printf "- **Build:** missing attribute `%s` (%d %s)\n", $2, $1, ($1 == 1 ? "entry" : "entries") }' || true
+    } > "$attention.all"
+    head -n "$max_items" "$attention.all"
+    total=$(wc -l < "$attention.all")
+    if [ "$total" -gt "$max_items" ]; then
+      echo "- **Build:** ... and $((total - max_items)) more. See **Build**."
+    fi
+    rm -f "$attention.all"
+  } > "$attention"
+}
+
+write_attention
 
 echo "## Build"
 echo

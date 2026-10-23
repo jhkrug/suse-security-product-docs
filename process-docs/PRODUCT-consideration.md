@@ -105,7 +105,9 @@ applies them on a `sync/kubewarden-<sha>` branch, builds the site with
 `scripts/build-report.sh` adds a build report: the FATAL, ERROR, and WARN
 counts of the build log, the missing attributes, and each entry with its
 file. The pull request is a draft when the report lists work for a person or
-the build has errors or missing attributes. The run does nothing when a sync
+the build has errors or missing attributes. Its body then starts with "Why
+this pull request is a draft", with one bullet for each of these items, from
+`sync.py --attention` and `build-report.sh`. The run does nothing when a sync
 pull request for the same upstream commit is open, and it closes the older
 sync pull requests that the new one replaces. Run it from the Actions tab or with
 `gh workflow run sync.yml`. The `plan_only` input writes the plan to the run
