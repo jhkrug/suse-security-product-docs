@@ -99,9 +99,13 @@ work for a person.
 The `Sync with kubewarden/docs` workflow, `.github/workflows/sync.yml`, runs
 the script on demand. It plans the sync and, when there are upstream changes,
 applies them on a `sync/kubewarden-<sha>` branch, builds the site with
-`make product-local`, and opens a pull request with the report. The pull
-request is a draft when the report lists work for a person or the build has
-errors or missing attributes. Run it from the Actions tab or with
+`make product-local`, and opens a pull request with the report.
+`scripts/build-report.sh` adds a build report: the FATAL, ERROR, and WARN
+counts of the build log, the missing attributes, and each entry with its
+file. The pull request is a draft when the report lists work for a person or
+the build has errors or missing attributes. The run does nothing when a sync
+pull request for the same upstream commit is open, and it closes the older
+sync pull requests that the new one replaces. Run it from the Actions tab or with
 `gh workflow run sync.yml`. The `plan_only` input writes the plan to the run
 summary without a branch or pull request.
 

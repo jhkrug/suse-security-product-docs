@@ -49,9 +49,27 @@ jobs:
             echo "changes=false" >> "$GITHUB_OUTPUT"
           fi
 
+      - name: Check for an open sync pull request
+        id: open
+        if: steps.plan.outputs.changes == 'true' && !inputs.plan_only
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BRANCH: ${{ steps.plan.outputs.branch }}
+        run: |
+          # A new run for the same upstream commit would replace the branch
+          # and remove any fixes pushed to it.
+          pr=$(gh pr list --head "$BRANCH" --state open --json number --jq '.[0].number // empty')
+          if [ -n "$pr" ]; then
+            echo "Sync pull request #$pr for \`$BRANCH\` is already open. Nothing to do." >> "$GITHUB_STEP_SUMMARY"
+            echo "::notice::Sync pull request #$pr is already open"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Apply
         id: apply
-        if: steps.plan.outputs.changes == 'true' && !inputs.plan_only
+        if: steps.open.outputs.skip == 'false'
         env:
           HEAD_SHA: ${{ steps.plan.outputs.head }}
           BRANCH: ${{ steps.plan.outputs.branch }}
@@ -89,25 +107,12 @@ jobs:
           set +e
           make product-local > "$RUNNER_TEMP/make.log" 2>&1
           status=$?
+          scripts/build-report.sh tmp/build.log "$status" "$RUNNER_TEMP/make.log" > "$RUNNER_TEMP/build.md"
+          ok=$?
           set -e
-          mkdir -p tmp && touch tmp/build.log
-          errors=$(grep -ciE 'error|fatal' tmp/build.log || true)
-          missing=$(grep -c 'missing attribute' tmp/build.log || true)
-          {
-            echo "## Build"
-            echo
-            echo "\`make product-local\`: exit status $status, $errors error lines, $missing missing attribute warnings."
-            if [ "$errors" -gt 0 ] || [ "$missing" -gt 0 ]; then
-              echo
-              echo '```'
-              grep -iE 'error|fatal|missing attribute' tmp/build.log | head -50
-              echo '```'
-            fi
-          } > "$RUNNER_TEMP/build.md"
           cat "$RUNNER_TEMP/build.md" >> "$RUNNER_TEMP/sync.md"
           cat "$RUNNER_TEMP/build.md" >> "$GITHUB_STEP_SUMMARY"
-          ok=$([ "$status" -eq 0 ] && [ "$errors" -eq 0 ] && [ "$missing" -eq 0 ] && echo true || echo false)
-          echo "ok=$ok" >> "$GITHUB_OUTPUT"
+          echo "ok=$([ "$ok" -eq 0 ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
 
       - name: Push and open pull request
         if: steps.apply.outcome == 'success'
@@ -136,16 +141,20 @@ jobs:
             mv "$body.cut" "$body"
           fi
           title="Sync with kubewarden/docs $HEAD_REF ($HEAD_SHA)"
-          pr=$(gh pr list --head "$BRANCH" --state open --json number --jq '.[0].number')
-          if [ -n "$pr" ]; then
-            gh pr edit "$pr" --title "$title" --body-file "$body"
-            echo "Updated pull request #$pr." >> "$GITHUB_STEP_SUMMARY"
-          else
-            args=(--base main --head "$BRANCH" --title "$title" --body-file "$body")
-            [ "$DRAFT" != "true" ] || args+=(--draft)
-            if url=$(gh pr create "${args[@]}"); then
-              echo "Opened $url" >> "$GITHUB_STEP_SUMMARY"
-            else
-              echo "Could not open the pull request. Open it from $COMPARE_URL" >> "$GITHUB_STEP_SUMMARY"
-            fi
+          args=(--base main --head "$BRANCH" --title "$title" --body-file "$body")
+          [ "$DRAFT" != "true" ] || args+=(--draft)
+          if ! url=$(gh pr create "${args[@]}"); then
+            echo "Could not open the pull request. Open it from $COMPARE_URL" >> "$GITHUB_STEP_SUMMARY"
+            echo "::error::Could not open the pull request for $BRANCH"
+            exit 1
           fi
+          echo "Opened $url" >> "$GITHUB_STEP_SUMMARY"
+          new=${url##*/}
+          # Close the sync pull requests that this one replaces. Their
+          # branches stay, in case they have fixes to carry over.
+          gh pr list --state open --json number,headRefName \
+            --jq '.[] | select(.headRefName | startswith("sync/kubewarden-")) | select(.headRefName != env.BRANCH) | .number' |
+            while read -r old; do
+              gh pr close "$old" --comment "Replaced by #$new, which syncs to a newer upstream commit. If this pull request has fixes that are not in main, add them to #$new."
+              echo "Closed #$old, replaced by #$new." >> "$GITHUB_STEP_SUMMARY"
+            done
