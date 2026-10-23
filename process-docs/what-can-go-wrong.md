@@ -15,8 +15,10 @@ incomplete, and the fact that a failed run reaches only one person.
 | What happens | Where it shows |
 |---|---|
 | The script or a step fails: `sync.py` exits 1, a git or push error, a Python traceback | The run fails. GitHub emails only the person who started it. For a scheduled run, it emails the person who last changed the schedule. No issue, no team notification. |
-| `apply` lists work for a person, or the build has errors or missing attributes | The pull request is a draft. The body lists the items. |
-| The workflow may not create the pull request | The run is green. The compare link is only in the run summary. |
+| `apply` lists work for a person, or the build has errors or missing attributes | The pull request is a draft. The body lists the items and has a build report: the FATAL, ERROR, and WARN counts, the missing attributes, and each entry with its file. |
+| The workflow may not create the pull request | The run fails with an error annotation. The run summary has the compare link. |
+| A sync pull request for the same upstream commit is already open | The run does nothing and says so in the summary, so that fixes pushed to the branch stay. |
+| A newer sync pull request is opened | The workflow closes the older sync pull requests with a comment that links to the new one. Their branches stay. |
 | Informational report sections: "Local differences", "Product layer", "Upstream tooling to review", "Stale translations" | Only in the pull request body. They do not make it a draft. |
 
 ## Upstream changes
@@ -40,33 +42,31 @@ incomplete, and the fact that a failed run reaches only one person.
 | Change | Effect |
 |---|---|
 | A local edit to a copied file, which `AGENTS.md` does not allow | Later upstream changes merge with it. A clean merge keeps the edit without a warning. A conflict keeps the local file and makes the pull request a draft. |
-| A person pushes fixes to an open sync branch, and the workflow runs again | The force push removes the fixes. |
-| An older sync pull request is still open when upstream moves on | The next run opens a second pull request with the same changes and the new ones. Merging both gives conflicts. |
+| A person pushes fixes to an open sync branch, and the workflow runs again | The run sees the open pull request and does nothing. |
+| An older sync pull request is still open when upstream moves on | The next run opens a new pull request and closes the older one. Fixes pushed to the older branch must be carried over by hand; the closing comment says so. |
 | `.upstream-ref` moved forward without a sync | The upstream changes in between are never applied. They show only under "Local differences". |
 | `.upstream-ref` not updated after a manual sync | Harmless. The next run lists those files under "Already applied". |
-| The Makefile or playbook stops writing `tmp/build.log` | The build check counts 0 errors in an empty file and passes. |
-| The `make product-local` exit status | `tee` hides the Antora exit status, so the error count in the log is the real check. The `error` pattern can also match harmless lines and make a draft without a reason. |
+| The Makefile or playbook stops writing `tmp/build.log` | `scripts/build-report.sh` reports that the log is missing or empty and the pull request is a draft. |
+| The Makefile or playbook changes the log format | `scripts/build-report.sh` counts the Antora levels in `--log-format=pretty`, for example `] ERROR (`. With another format it finds nothing and passes. |
+| The `make product-local` exit status | `tee` hides the Antora exit status, so the counts in the log are the real check. |
 | Hand edits to the language copies of the variables partials | `apply` and `copies` overwrite them. This is intended. |
 | The translation process changes the same files while a sync pull request is open | Normal merge conflicts in the pull request. |
-| The organization stops workflows from creating pull requests, limits the token, or adds rules for `sync/*` branches | A push failure fails the run. A pull request that cannot be created gives the green run described above. |
+| The organization stops workflows from creating pull requests, limits the token, or adds rules for `sync/*` branches | The run fails. |
 | Runner image changes (Ubuntu 26), Node.js, or npm problems | Usually a failed build, so a draft. |
 
 ## Hardening
 
-In order of priority:
+Done: the run fails when the pull request cannot be created, it does
+nothing when a sync pull request for the same upstream commit is open, it
+closes the sync pull requests that a new one replaces, and
+`scripts/build-report.sh` checks the build log.
 
-1. Fail the run when the pull request cannot be created, with an error
-   annotation, not only a link in the summary.
-2. Do not force push over commits by people. When the sync branch has
-   commits that are not from the workflow, stop and report it.
-3. Close sync pull requests that a newer one replaces, with a comment that
-   links to the new one.
-4. Fail the build check when `tmp/build.log` is missing or empty. Count the
-   Antora log levels (`ERROR (`, `FATAL (`) instead of any line with "error".
-5. Report these as manual follow-up, so the pull request is a draft: new
+To do, in order of priority:
+
+1. Report these as manual follow-up, so the pull request is a draft: new
    component versions (and set the product `title:`), new components,
    upstream tooling changes, and translations deleted by a delete and add.
-6. Report new and removed attributes in `community-specific/variables.adoc`,
+2. Report new and removed attributes in `community-specific/variables.adoc`,
    not only `release-tag` and `chart-version`.
-7. For scheduled runs, open or update an issue when a run fails, so that the
+3. For scheduled runs, open or update an issue when a run fails, so that the
    team sees it.
