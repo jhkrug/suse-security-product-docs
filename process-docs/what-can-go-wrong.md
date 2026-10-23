@@ -19,7 +19,7 @@ incomplete, and the fact that a failed run reaches only one person.
 | The workflow may not create the pull request | The run fails with an error annotation. The run summary has the compare link. |
 | A sync pull request for the same upstream commit is already open | The run does nothing and says so in the summary, so that fixes pushed to the branch stay. |
 | A newer sync pull request is opened | The workflow closes the older sync pull requests with a comment that links to the new one. Their branches stay. |
-| Informational report sections: "Local differences", "Product layer", "Upstream tooling to review", "Stale translations" | Only in the pull request body. They do not make it a draft. |
+| Informational report sections: "Local differences", "Product layer", "Upstream tooling to review", "Stale translations" | Only in the pull request body. They do not make it a draft. "Upstream build changes" does. |
 
 ## Upstream changes
 
@@ -27,13 +27,14 @@ incomplete, and the fact that a failed run reaches only one person.
 |---|---|---|
 | `main` renamed, repository moved, or history rewritten | The fetch fails, or `base is not an ancestor of head` | Loud: the run fails |
 | A shared page includes a new `{build-type}-specific/` partial | The report lists "create product-specific/…". The build logs a missing include | Loud: draft |
-| A new attribute in `community-specific/variables.adoc`, other than `release-tag` and `chart-version` | Not reported. The build warns only if a page renders the attribute, not inside `ifdef` | Partly silent |
+| A new attribute in a `community-specific/` file | Reported when no product-specific file or shared partial defines it. A removed attribute that a product file still defines is listed | Loud: draft |
 | An attribute renamed that translated pages still use | Fixed when the English line differs only in the attribute names. Otherwise the build shows a missing attribute | Mostly loud |
-| A new component version | Copied, but its `antora.yml` has the community `title:`, for example `SBOM Scanner` | Silent: wrong title |
-| A new component, a new `docs/<component>/` | Copied, but the playbook `start_paths` do not include it, so it is not built | Silent |
+| A new component version | Copied. Its `antora.yml` gets the product `title:` of the version before it, and its product layer is copied from that version. The release tags are bumped in the copy | Loud: draft, to review the copied values |
+| A new component, a new `docs/<component>/` | Copied. The report asks for a product layer and title, and for each playbook whose `start_paths` do not include it | Loud: draft |
 | An old version deleted | The English and language files go. The product-specific files stay and can break the build | Loud (build), or orphan files |
-| A page moved and changed so much that git sees a delete and an add | The translations are deleted and replaced by English placeholders. They are lost | Listed, not a draft |
-| Tooling changes: a docs-common bump, extensions, playbooks, global attributes | Listed under "Upstream tooling to review" only. The product build can drift from what the content expects | Silent unless someone reads it |
+| A page moved and changed so much that git sees a delete and an add | Rename detection uses a 40% similarity threshold, so most moves are seen. Otherwise the translations are kept, not deleted, and the report suggests the new page with the same file name | Loud: draft |
+| Build changes: `package.json`, the lockfile, `Makefile`, `.gitmodules`, the `docs-common` submodule, playbooks, `ui/` | Listed under "Upstream build changes". For a `docs-common` bump, the report compares it with `product-docs-common` | Loud: draft |
+| Other tooling changes: `AGENTS.md`, `.github/`, `updatecli/`, `scripts/` | Listed under "Upstream tooling to review" | Informational |
 | Product release tags that differ from upstream, for example without the leading `v` | The upstream value goes into the product `variables.adoc`. See [follow-ups.md](follow-ups.md) | Silent: wrong value |
 | A merge that is clean as text but wrong in meaning | Listed under "Merged" | Needs review |
 
@@ -56,17 +57,17 @@ incomplete, and the fact that a failed run reaches only one person.
 
 ## Hardening
 
-Done: the run fails when the pull request cannot be created, it does
-nothing when a sync pull request for the same upstream commit is open, it
-closes the sync pull requests that a new one replaces, and
-`scripts/build-report.sh` checks the build log.
+Done:
 
-To do, in order of priority:
+- The run fails when the pull request cannot be created.
+- The run does nothing when a sync pull request for the same upstream commit
+  is open, and it closes the sync pull requests that a new one replaces.
+- `scripts/build-report.sh` checks the build log.
+- `scripts/sync.py` gives new component versions the product title, reports
+  new components, upstream build changes, translated pages deleted upstream,
+  and attributes added to or removed from `community-specific/` files.
 
-1. Report these as manual follow-up, so the pull request is a draft: new
-   component versions (and set the product `title:`), new components,
-   upstream tooling changes, and translations deleted by a delete and add.
-2. Report new and removed attributes in `community-specific/variables.adoc`,
-   not only `release-tag` and `chart-version`.
-3. For scheduled runs, open or update an issue when a run fails, so that the
+To do:
+
+1. For scheduled runs, open or update an issue when a run fails, so that the
    team sees it.
