@@ -32,6 +32,8 @@ The rules come from process-docs/PRODUCT-consideration.md and AGENTS.md:
   tooling changes, stale translations
 
 apply stages its changes and updates .upstream-ref. It does not commit.
+--attention FILE writes the items that need a person as Markdown bullets,
+for the top of the sync pull request.
 
 Exit status:
   plan:  0 no upstream changes, 2 upstream changes, 1 error
@@ -83,6 +85,8 @@ SECTIONS = [
     ("Local differences", "Differences from upstream at head, outside the product layer, the translations, and the product antora.yml lines.", False),
 ]
 COLLAPSED = {"Already applied", "Local differences"}
+# Labels of the sections that need a person, for the attention list.
+ATTENTION_LABELS = {"Conflicts": "Conflict", "Manual follow-up": "Manual follow-up", "Upstream build changes": "Upstream build change"}
 
 
 class Error(Exception):
@@ -709,6 +713,14 @@ class Plan:
     def needs_person(self):
         return any(self.sections.get(name) for name, _, manual in SECTIONS if manual)
 
+    def attention(self):
+        """One Markdown bullet for each item that needs a person."""
+        return [
+            f"- **{ATTENTION_LABELS.get(name, name)}:** {item}"
+            for name, _, manual in SECTIONS if manual
+            for item in self.sections.get(name, [])
+        ]
+
     def branch(self):
         """Branch name for the sync, after the upstream head commit."""
         return f"sync/kubewarden-{self.head[:7]}"
@@ -866,6 +878,7 @@ def main():
     parser.add_argument("--upstream-url", default=UPSTREAM_URL, help=f"upstream repository (default: {UPSTREAM_URL})")
     parser.add_argument("--no-fetch", action="store_true", help="use objects already in the repository")
     parser.add_argument("--output", type=Path, help="write the report to this file instead of stdout")
+    parser.add_argument("--attention", type=Path, help="write the items that need a person to this file, one Markdown bullet each")
     args = parser.parse_args()
 
     try:
@@ -901,6 +914,9 @@ def main():
         print(f"sync: {exc}", file=sys.stderr)
         return 1
 
+    if args.attention:
+        items = plan.attention()
+        args.attention.write_text("".join(f"{item}\n" for item in items))
     if args.output:
         args.output.write_text(report + "\n")
     else:

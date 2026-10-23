@@ -76,7 +76,8 @@ jobs:
         run: |
           git switch -c "$BRANCH"
           set +e
-          scripts/sync.py apply --head "$HEAD_SHA" --no-fetch --output "$RUNNER_TEMP/sync.md"
+          scripts/sync.py apply --head "$HEAD_SHA" --no-fetch --output "$RUNNER_TEMP/sync.md" \
+            --attention "$RUNNER_TEMP/attention-sync.md"
           status=$?
           set -e
           [ "$status" -ne 1 ] || exit 1
@@ -107,7 +108,8 @@ jobs:
           set +e
           make product-local > "$RUNNER_TEMP/make.log" 2>&1
           status=$?
-          scripts/build-report.sh tmp/build.log "$status" "$RUNNER_TEMP/make.log" > "$RUNNER_TEMP/build.md"
+          scripts/build-report.sh tmp/build.log "$status" "$RUNNER_TEMP/make.log" \
+            "$RUNNER_TEMP/attention-build.md" > "$RUNNER_TEMP/build.md"
           ok=$?
           set -e
           cat "$RUNNER_TEMP/build.md" >> "$RUNNER_TEMP/sync.md"
@@ -129,16 +131,33 @@ jobs:
           body="$RUNNER_TEMP/body.md"
           {
             echo "Made with \`scripts/sync.py apply\` by the [sync workflow]($RUN_URL)."
-            if [ "$DRAFT" = "true" ]; then
-              echo "It is a draft because the report lists work for a person or the build has problems."
-            fi
             echo
+            if [ "$DRAFT" = "true" ]; then
+              echo "## Why this pull request is a draft"
+              echo
+              echo "Resolve these before you mark it ready for review:"
+              echo
+              if [ -s "$RUNNER_TEMP/attention-sync.md" ] || [ -s "$RUNNER_TEMP/attention-build.md" ]; then
+                cat "$RUNNER_TEMP/attention-sync.md" "$RUNNER_TEMP/attention-build.md" 2>/dev/null || true
+              else
+                echo "- See the report and the **Build** section below."
+              fi
+              echo
+            fi
             cat "$RUNNER_TEMP/sync.md"
           } > "$body"
           if [ "$(wc -c < "$body")" -gt 60000 ]; then
             head -c 60000 "$body" > "$body.cut"
             printf '\n\n(Cut. See the workflow run for the full plan.)\n' >> "$body.cut"
             mv "$body.cut" "$body"
+          fi
+          if [ "$DRAFT" = "true" ]; then
+            {
+              echo "## Why the pull request is a draft"
+              echo
+              cat "$RUNNER_TEMP/attention-sync.md" "$RUNNER_TEMP/attention-build.md" 2>/dev/null || true
+              echo
+            } >> "$GITHUB_STEP_SUMMARY"
           fi
           title="Sync with kubewarden/docs $HEAD_REF ($HEAD_SHA)"
           args=(--base main --head "$BRANCH" --title "$title" --body-file "$body")

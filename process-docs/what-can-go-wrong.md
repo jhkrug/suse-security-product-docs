@@ -15,7 +15,7 @@ incomplete, and the fact that a failed run reaches only one person.
 | What happens | Where it shows |
 |---|---|
 | The script or a step fails: `sync.py` exits 1, a git or push error, a Python traceback | The run fails. GitHub emails only the person who started it. For a scheduled run, it emails the person who last changed the schedule. No issue, no team notification. |
-| `apply` lists work for a person, or the build has errors or missing attributes | The pull request is a draft. The body lists the items and has a build report: the FATAL, ERROR, and WARN counts, the missing attributes, and each entry with its file. |
+| `apply` lists work for a person, or the build has errors or missing attributes | The pull request is a draft. Its body starts with "Why this pull request is a draft": one bullet for each item and build problem. The body also has a build report: the FATAL, ERROR, and WARN counts, the missing attributes, and each entry with its file. |
 | The workflow may not create the pull request | The run fails with an error annotation. The run summary has the compare link. |
 | A sync pull request for the same upstream commit is already open | The run does nothing and says so in the summary, so that fixes pushed to the branch stay. |
 | A newer sync pull request is opened | The workflow closes the older sync pull requests with a comment that links to the new one. Their branches stay. |
