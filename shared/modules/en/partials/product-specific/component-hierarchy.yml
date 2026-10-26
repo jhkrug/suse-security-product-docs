@@ -1,0 +1,32 @@
+# Groups for the "Component / version" selector at the bottom of the left
+# navigation. The componenthierarchy helper in dsc-style-bundle finds every
+# partial named component-hierarchy.yml at build time.
+#
+# Each node sets:
+#   component:        the Antora component name, from antora.yml
+#   expanded:         true or false, whether the group starts open
+#   include_versions: true or false, whether to show version links
+# A node can also set title (overrides the antora.yml title) and children.
+#
+# Components that are not listed keep their place in the flat list.
+
+component_hierarchy:
+  - component: kubewarden
+    expanded: true
+    include_versions: false
+    children:
+      - component: admission-controller
+        expanded: false
+        include_versions: true
+      - component: sbom-scanner
+        expanded: false
+        include_versions: true
+      - component: runtime-enforcer
+        expanded: false
+        include_versions: true
+      - component: network-enforcer
+        expanded: false
+        include_versions: true
+
+hidden_components:
+  - shared

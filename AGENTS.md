@@ -24,6 +24,9 @@ For why this repository exists and the design choices behind it, see
     namespaces, release tags.
   - Partials for passages that differ in the product build.
   - Pages, nav fragments, and images that exist only in the product build.
+  - `shared/modules/en/partials/product-specific/component-hierarchy.yml`:
+    the groups of the "Component / version" selector. The
+    `componenthierarchy` helper in `dsc-style-bundle` reads it.
 - The `title:` of these `antora.yml` files. The sync keeps them:
   - `docs/sbom-scanner/version-*/antora.yml`: `Vulnerability Scanner`
   - `docs/kw/version-*/antora.yml`: `SUSE Security`
