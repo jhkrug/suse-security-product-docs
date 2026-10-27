@@ -1,0 +1,22 @@
+// The version references of the SUSE Security landing page, for its cards
+// (landing-components.adoc) and its navigation (landing-nav.adoc).
+//
+// The release-url-layout extension in product-docs-common publishes one copy
+// of the landing page for each SUSE Security release. On each copy, it sets
+// release-version and release-<component>-version from
+// shared/modules/en/partials/product-specific/suse-security-release-config.yml.
+// The links then go to the component versions of that release.
+// Without these attributes, for example in a build without the extension,
+// the links go to the latest version of each component.
+ifdef::release-version[]
+:landing-admc-ref: {release-admission-controller-version}@
+:landing-sboms-ref: {release-sbom-scanner-version}@
+:landing-rte-ref: {release-runtime-enforcer-version}@
+:landing-ne-ref: {release-network-enforcer-version}@
+endif::[]
+ifndef::release-version[]
+:landing-admc-ref:
+:landing-sboms-ref:
+:landing-rte-ref:
+:landing-ne-ref:
+endif::[]
