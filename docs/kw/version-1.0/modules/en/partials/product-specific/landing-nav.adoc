@@ -1,0 +1,11 @@
+// The navigation of the landing page in the product build. The links go to
+// the component versions of the SUSE Security release; see
+// landing-release-refs.adoc.
+include::partial$product-specific/landing-release-refs.adoc[]
+
+* xref:introduction.adoc[Overview]
+* Components
+** xref:{landing-admc-ref}admission-controller:en:introduction.adoc[{admc-short-name}]
+** xref:{landing-sboms-ref}sbom-scanner:en:introduction.adoc[{sboms-short-name}]
+** xref:{landing-rte-ref}runtime-enforcer:en:introduction.adoc[{rte-short-name}]
+** xref:{landing-ne-ref}network-enforcer:en:introduction.adoc[{ne-short-name}]
