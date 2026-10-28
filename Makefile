@@ -1,3 +1,8 @@
+# Fail a recipe if any command in a pipeline fails, for example antora in
+# "antora ... | tee", not only the last command.
+SHELL := /bin/bash
+.SHELLFLAGS := -o pipefail -c
+
 .PHONY: all
 all:
 	@echo "Available targets:"
