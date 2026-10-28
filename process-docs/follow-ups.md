@@ -95,10 +95,8 @@ the upstream community repository. Remove an item when it is done.
   `./product-docs-common/extensions/mermaid-block/mermaid-block.js` under
   `asciidoc.extensions`, and remove the package.
 - **Publishing playbook.** `product-docs-playbook` builds the published site.
-  When this repository goes live:
-  - Replace the `kubewarden-product-docs`, `sbomscanner-product-docs`, and
-    `runtime-enforcer-product-docs` sources with one source for this
-    repository, with the same start paths as `remote-product-playbook.yml`.
+  The switch to this repository is a planned step in
+  [next-steps.md](next-steps.md). Also check:
   - It sets `build-type: product@` and the old `kw-build-type`. Check that no
     page overrides `build-type`.
   - It indexes with `index_latest_only: true`. This repository uses `false`.
