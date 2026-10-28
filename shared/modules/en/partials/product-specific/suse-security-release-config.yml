@@ -1,0 +1,46 @@
+# SUSE Security releases.
+#
+# Each release pins one version of each component. Two tools read this file:
+#
+# - The productreleases helper in dsc-style-bundle: the "Component /
+#   version" selector and the page version menu show the SUSE Security
+#   releases, not the component versions.
+# - The release-url-layout extension in product-docs-common (planned): it
+#   publishes each release at /<url_prefix>/<release>/<lang>/, for example
+#   /suse-security/6.0.0/en/admission-controller/introduction.html. A
+#   component version that several releases pin is built once, under the
+#   oldest of them. Component versions that no release pins are not built.
+#
+# product:
+#   component:       the Antora component of the landing page
+#   landing_version: the version of that component to publish for each release
+#   url_prefix:      the first URL segment of the releases
+# releases, newest first:
+#   version:    the release, for example '6.0.1'
+#   prerelease: optional, true or false. Must be true if the release pins a
+#               prerelease component version.
+#   components: the Antora component names and the pinned versions
+#
+# The build stops if this file is not valid, or if it names a component
+# version that is not in the site.
+
+product:
+  component: kubewarden
+  landing_version: '1.0'
+  url_prefix: suse-security
+
+releases:
+  - version: '6.0.0'
+    components:
+      admission-controller: '1.38'
+      sbom-scanner: '0.13'
+      runtime-enforcer: '0.10'
+      network-enforcer: '0.3'
+  # Demo only: an older release, to try the release selectors. Remove before
+  # publishing.
+  - version: '5.9.9'
+    components:
+      admission-controller: '1.37'
+      sbom-scanner: '0.12'
+      runtime-enforcer: '0.9'
+      network-enforcer: '0.2'
