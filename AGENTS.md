@@ -46,6 +46,8 @@ For why this repository exists and the design choices behind it, see
   - `PRODUCT-consideration.md`: why this repository exists, and the design
     of the sync.
   - `follow-ups.md`: open questions and known issues.
+  - `next-steps.md`: planned work, for example the installation pages and
+    the switch of the published site to this repository.
   - `what-can-go-wrong.md`: how the sync can fail, and how it is reported.
 
 The automated translation process writes the localized content, the language
