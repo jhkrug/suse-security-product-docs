@@ -1,6 +1,7 @@
 site:
   title: SUSE Security
-  start_page: 1.0@kubewarden:en:introduction.adoc
+  # No version: the newest SUSE Security release that is not a prerelease.
+  start_page: kubewarden:en:introduction.adoc
 
 content:
   sources:
@@ -41,6 +42,8 @@ antora:
     - require: ./product-docs-common/extensions/dynamic-loading-attributes/load-global-site-attributes.js
       attributefile: ./product-docs-common/global-attributes.yml
       enabled: true
+    # Before vlp.js, so that vlp.js sees only the component versions that are built.
+    - require: ./product-docs-common/extensions/release-url-layout/release-url-layout.js
     - require: ./product-docs-common/extensions/versions-latest-prerelease/vlp.js
       enabled: true
 

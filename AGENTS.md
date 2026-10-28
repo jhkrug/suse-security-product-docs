@@ -26,7 +26,8 @@ For why this repository exists and the design choices behind it, see
   - Pages, nav fragments, and images that exist only in the product build.
   - `shared/modules/en/partials/product-specific/suse-security-release-config.yml`:
     the SUSE Security releases and the component versions that each release
-    pins. The selectors in `dsc-style-bundle` read it.
+    pins. The selectors in `dsc-style-bundle` and the `release-url-layout`
+    extension in `product-docs-common` read it.
 - The `title:` of these `antora.yml` files. The sync keeps them:
   - `docs/sbom-scanner/version-*/antora.yml`: `Vulnerability Scanner`
   - `docs/kw/version-*/antora.yml`: `SUSE Security`
