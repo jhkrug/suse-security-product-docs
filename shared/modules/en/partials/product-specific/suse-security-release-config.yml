@@ -5,8 +5,8 @@
 # - The productreleases helper in dsc-style-bundle: the "Component /
 #   version" selector and the page version menu show the SUSE Security
 #   releases, not the component versions.
-# - The release-url-layout extension in product-docs-common (planned): it
-#   publishes each release at /<url_prefix>/<release>/<lang>/, for example
+# - The release-url-layout extension in product-docs-common: it publishes
+#   each release at /<url_prefix>/<release>/<lang>/, for example
 #   /suse-security/6.0.0/en/admission-controller/introduction.html. A
 #   component version that several releases pin is built once, under the
 #   oldest of them. Component versions that no release pins are not built.
