@@ -10,6 +10,8 @@
 #   /suse-security/6.0.0/en/admission-controller/introduction.html. A
 #   component version that several releases pin is built once, under the
 #   oldest of them. Component versions that no release pins are not built.
+#   /<url_prefix>/latest links to the newest release that is not a
+#   prerelease, and /<url_prefix>/dev to the newest prerelease, if any.
 #
 # product:
 #   component:       the Antora component of the landing page
