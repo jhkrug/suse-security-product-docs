@@ -20,7 +20,7 @@ send their telemetry through OpenTelemetry.
 You install the components together with the {kw-name} Helm chart. See
 xref:product-specific/quick-start.adoc[Install {kw-name}].
 
-[#what-does-each-component-do]
+[#_what_does_each_component_do]
 == What does each component do?
 
 Each component acts on a different part of the workload. Each component uses
@@ -30,7 +30,7 @@ a different mechanism to enforce its policies.
 the software packages in an image. {rte-short-name} uses extended Berkeley
 Packet Filter (eBPF) programs in the kernel of each node.
 
-[#tab-components]
+[#_tab_components]
 .The {kw-name} components
 [cols="1,2,2,2", options="header"]
 |===
@@ -58,7 +58,7 @@ or Cilium
 |Policy proposals, and violations in the policy status
 |===
 
-[#how-do-the-components-integrate]
+[#_how_do_the_components_integrate]
 == How do the components integrate?
 
 The components integrate through the Kubernetes API. Each component watches
@@ -70,7 +70,7 @@ Each component uses the platform service for its part of the workload. All
 components send their telemetry to the same observability stack through
 OpenTelemetry.
 
-[#fig-architecture]
+[#_fig_architecture]
 .Architecture of {kw-name}
 [mermaid,subs="attributes"]
 ....
@@ -115,7 +115,7 @@ graph LR
     class outer,kw,platform container
 ....
 
-[#how-do-the-components-protect-a-workload]
+[#_how_do_the_components_protect_a_workload]
 == How do the components protect a workload?
 
 The components protect a workload at each stage, from the image to the
@@ -142,12 +142,12 @@ running containers:
   {ne-short-name} write each violation to the status of the policy. All
   components send their telemetry to your observability stack.
 
-[#what-are-the-design-principles]
+[#_what_are_the_design_principles]
 == What are the design principles?
 
 The components share five design principles.
 
-[#kubernetes-native-design]
+[#_kubernetes_native_design]
 === Kubernetes-native design
 
 Each component is a set of Kubernetes controllers. The controllers watch
@@ -155,7 +155,7 @@ custom resources. You use your usual Kubernetes tools for all components:
 `kubectl`, role-based access control (RBAC) and GitOps. With these tools, you manage policies, read
 results and control access.
 
-[#policies-and-results-as-kubernetes-resources]
+[#_policies_and_results_as_kubernetes_resources]
 === Policies and results as Kubernetes resources
 
 Policies, proposals and reports are Kubernetes resources. The violations of a
@@ -163,7 +163,7 @@ policy are in the status of the policy. You can list, watch and filter them
 like other Kubernetes resources. Other tools can read them without a special
 client, for example, a UI or an admission policy.
 
-[#observation-before-enforcement]
+[#_observation_before_enforcement]
 === Observation before enforcement
 
 You can see the effect of a policy before it blocks a workload. An
@@ -174,7 +174,7 @@ a policy. You monitor the policy, and then you set it to protect. You move
 the policy from one phase to the next. A policy blocks a workload only after
 you set it to protect.
 
-[#enforcement-with-existing-cluster-mechanisms]
+[#_enforcement_with_existing_cluster_mechanisms]
 === Enforcement with existing cluster mechanisms
 
 The components use mechanisms that the cluster has already:
@@ -186,7 +186,7 @@ The components use mechanisms that the cluster has already:
 {ne-short-name} adds no agent to the nodes. The network data plane enforces
 its policies.
 
-[#open-standards]
+[#_open_standards]
 === Open standards
 
 The components use open standards:

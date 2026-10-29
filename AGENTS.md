@@ -82,8 +82,14 @@ The most frequent points:
 - Write `:description:` as one complete sentence of 120 to 155 characters,
   with no full stop at the end.
 - Expand an acronym on first use.
-- Give tables, figures and sections short IDs from their titles. Use the
-  prefixes `tab-` and `fig-`, and no prefix for sections.
+- Give each section an explicit ID in the form of the ID that Asciidoctor
+  generates from the title: an underscore, then the words of the title in
+  lowercase with underscores between them. For example, the ID of
+  `== What does each component do?` is `[#_what_does_each_component_do]`.
+  The explicit ID is then the same as the generated ID, so links stay the
+  same. Give tables and figures short IDs in the same form, with the prefixes
+  `_tab_` and `_fig_`, for example `[#_tab_components]`. With a role, put the
+  ID first: `[#_components.component-grid]`.
 - Present SUSE Security as one integrated product, installed with one Helm
   chart. Do not write that the components can be used on their own. That is
   community messaging.

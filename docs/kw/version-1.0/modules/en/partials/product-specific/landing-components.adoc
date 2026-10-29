@@ -3,22 +3,22 @@
 // landing-release-refs.adoc.
 include::partial$product-specific/landing-release-refs.adoc[]
 
-[.component-card.admission-card]
+[#_admission_controller.component-card.admission-card]
 === xref:{landing-admc-ref}admission-controller:en:introduction.adoc[{admc-short-name}]
 
 Stop unsafe workloads before they enter your cluster.
 
-[.component-card.sbom-card]
+[#_vulnerability_scanner.component-card.sbom-card]
 === xref:{landing-sboms-ref}sbom-scanner:en:introduction.adoc[{sboms-short-name}]
 
 Find vulnerabilities in the container images running inside your cluster.
 
-[.component-card.runtime-card]
+[#_runtime_enforcer.component-card.runtime-card]
 === xref:{landing-rte-ref}runtime-enforcer:en:introduction.adoc[{rte-short-name}]
 
 Control what can run inside your Kubernetes pods.
 
-[.component-card.network-card]
+[#_network_enforcer.component-card.network-card]
 === xref:{landing-ne-ref}network-enforcer:en:introduction.adoc[{ne-short-name}]
 
 Discover network activity and secure the communication between your workloads.

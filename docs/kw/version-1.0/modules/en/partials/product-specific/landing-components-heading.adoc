@@ -1,4 +1,4 @@
 // The heading of the component cards on the landing page in the product
 // build.
-[.component-grid]
+[#_components.component-grid]
 == Components
