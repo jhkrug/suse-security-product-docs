@@ -1,0 +1,17 @@
+include::partial$variables.adoc[]
+
+= Install {kw-name}
+:revdate: 2026-10-29
+:page-revdate: {revdate}
+:description: Install {kw-name} on a Kubernetes cluster with the {kw-name} Helm chart, which installs all four components in one step
+:doc-persona: ["kubewarden-all"]
+:doc-topic: ["installation", "quick-start"]
+:doc-type: ["tutorial"]
+
+You install {kw-name} with the {kw-name} Helm chart. The chart installs the
+four {kw-name} components in one step: {admc-short-name}, {sboms-short-name},
+{rte-short-name} and {ne-short-name}.
+
+// Placeholder: the installation steps with the SUSE Security Helm chart are
+// to come.
+The installation steps are not available yet.

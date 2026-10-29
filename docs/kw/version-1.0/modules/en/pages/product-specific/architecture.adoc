@@ -1,0 +1,197 @@
+include::partial$variables.adoc[]
+include::partial$product-specific/landing-release-refs.adoc[]
+
+= {kw-name} architecture
+:revdate: 2026-10-29
+:page-revdate: {revdate}
+:description: Learn how the four {kw-name} components work together to secure Kubernetes workloads from the image to admission, processes and network traffic
+:doc-persona: ["kubewarden-all"]
+:doc-topic: ["architecture"]
+:doc-type: ["explanation"]
+:keywords: ["{kw-name}", "kubernetes", "architecture", "admission", "vulnerability", "runtime", "network"]
+
+{kw-name} secures Kubernetes workloads with four integrated components:
+{sboms-short-name}, {admc-short-name}, {rte-short-name} and {ne-short-name}.
+Each component covers one stage in the life of a workload, from the image to
+its processes and network traffic. The components integrate through the
+Kubernetes API. They share one workflow to learn, monitor and protect. They
+send their telemetry through OpenTelemetry.
+
+You install the components together with the {kw-name} Helm chart. See
+xref:product-specific/quick-start.adoc[Install {kw-name}].
+
+[#what-does-each-component-do]
+== What does each component do?
+
+Each component acts on a different part of the workload. Each component uses
+a different mechanism to enforce its policies.
+
+{sboms-short-name} uses software bills of materials (SBOMs). An SBOM lists
+the software packages in an image. {rte-short-name} uses extended Berkeley
+Packet Filter (eBPF) programs in the kernel of each node.
+
+[#tab-components]
+.The {kw-name} components
+[cols="1,2,2,2", options="header"]
+|===
+|Component |Acts on |Enforces through |Writes
+
+|xref:{landing-sboms-ref}sbom-scanner:en:introduction.adoc[{sboms-short-name}]
+|The images in the registries and in the workloads, and the nodes
+|Nothing. It reports only.
+|SBOMs and vulnerability reports
+
+|xref:{landing-admc-ref}admission-controller:en:introduction.adoc[{admc-short-name}]
+|Each request to create or change a resource
+|The admission webhooks of the Kubernetes API server
+|Policy reports for the resources in the cluster
+
+|xref:{landing-rte-ref}runtime-enforcer:en:introduction.adoc[{rte-short-name}]
+|The processes in the containers
+|eBPF in the kernel of each node
+|Policy proposals, and violations in the policy status
+
+|xref:{landing-ne-ref}network-enforcer:en:introduction.adoc[{ne-short-name}]
+|The network traffic between workloads
+|The native policy objects of the network data plane: Istio ambient, Calico
+or Cilium
+|Policy proposals, and violations in the policy status
+|===
+
+[#how-do-the-components-integrate]
+== How do the components integrate?
+
+The components integrate through the Kubernetes API. Each component watches
+its custom resources in the Kubernetes API. Each component writes its results
+to the Kubernetes API. As a result, the policies and results of all components
+are in one location.
+
+Each component uses the platform service for its part of the workload. All
+components send their telemetry to the same observability stack through
+OpenTelemetry.
+
+[#fig-architecture]
+.Architecture of {kw-name}
+[mermaid,subs="attributes"]
+....
+%%{init: { "themeVariables": { "fontSize": "24px" } }}%%
+graph LR
+    accTitle: Architecture of {kw-name}
+    accDescr: A diagram showing the four {kw-name} components between the registries that they read and the Kubernetes API, node kernel and network data plane that they use.
+    subgraph outer[" "]
+      direction LR
+      registry[("Container and
+      OCI registries")]
+      subgraph kw["`**{kw-name}**`"]
+        direction TB
+        sboms["{sboms-short-name}"]
+        admc["{admc-short-name}"]
+        rte["{rte-short-name}"]
+        ne["{ne-short-name}"]
+      end
+      subgraph platform[" "]
+        direction TB
+        k8s(("Kubernetes API"))
+        nodes["Node kernel
+        (eBPF)"]
+        dataplane["Network data plane
+        Istio ambient, Calico
+        or Cilium"]
+      end
+    end
+    registry -->|"images"| sboms
+    registry -->|"policies"| admc
+    sboms -->|"vulnerability reports"| k8s
+    admc <-. "admission
+    webhooks" .-> k8s
+    rte -->|"proposals,
+    policy status"| k8s
+    ne -->|"proposals,
+    policy status"| k8s
+    rte -->|"observes and blocks
+    process executions"| nodes
+    ne -->|"reads flows, writes
+    native policies"| dataplane
+    class outer,kw,platform container
+....
+
+[#how-do-the-components-protect-a-workload]
+== How do the components protect a workload?
+
+The components protect a workload at each stage, from the image to the
+running containers:
+
+. *The image.* {sboms-short-name} reads the images in the registries and in
+  the running workloads. It makes an SBOM for each image. It writes a
+  vulnerability report for each image. It scans the stored SBOMs again on a
+  schedule. As a result, a new vulnerability appears in the report without a
+  new image.
+. *Admission.* You deploy the workload. The Kubernetes API server sends the
+  request to {admc-short-name}. The policies accept, reject or change the
+  request before the workload runs.
+. *Processes.* The workload runs. {rte-short-name} learns the processes that
+  the containers start. It proposes an allow list of these processes. After
+  you promote the proposal, it reports or blocks each process that is not on
+  the list.
+. *Network.* At the same time, {ne-short-name} learns the network traffic of
+  the workload from the network data plane. It proposes a network policy.
+  After you promote the proposal, the data plane enforces the policy.
+. *Continuous checks.* The {admc-short-name} audit scanner checks the
+  resources in the cluster against the current policies. {sboms-short-name}
+  keeps the vulnerability reports current. {rte-short-name} and
+  {ne-short-name} write each violation to the status of the policy. All
+  components send their telemetry to your observability stack.
+
+[#what-are-the-design-principles]
+== What are the design principles?
+
+The components share five design principles.
+
+[#kubernetes-native-design]
+=== Kubernetes-native design
+
+Each component is a set of Kubernetes controllers. The controllers watch
+custom resources. You use your usual Kubernetes tools for all components:
+`kubectl`, role-based access control (RBAC) and GitOps. With these tools, you manage policies, read
+results and control access.
+
+[#policies-and-results-as-kubernetes-resources]
+=== Policies and results as Kubernetes resources
+
+Policies, proposals and reports are Kubernetes resources. The violations of a
+policy are in the status of the policy. You can list, watch and filter them
+like other Kubernetes resources. Other tools can read them without a special
+client, for example, a UI or an admission policy.
+
+[#observation-before-enforcement]
+=== Observation before enforcement
+
+You can see the effect of a policy before it blocks a workload. An
+{admc-short-name} policy has a monitor mode. In monitor mode, the policy
+reports the requests that it rejects in protect mode. {rte-short-name} and
+{ne-short-name} learn the usual behavior of each workload. Then they propose
+a policy. You monitor the policy, and then you set it to protect. You move
+the policy from one phase to the next. A policy blocks a workload only after
+you set it to protect.
+
+[#enforcement-with-existing-cluster-mechanisms]
+=== Enforcement with existing cluster mechanisms
+
+The components use mechanisms that the cluster has already:
+
+* The admission webhooks of the Kubernetes API server
+* eBPF in the kernel of each node
+* The network data plane
+
+{ne-short-name} adds no agent to the nodes. The network data plane enforces
+its policies.
+
+[#open-standards]
+=== Open standards
+
+The components use open standards:
+
+* {admc-short-name} policies are WebAssembly modules. You distribute them as
+  OCI artifacts. OCI means Open Container Initiative.
+* {sboms-short-name} uses SBOMs, a standard format for software inventories.
+* All components send telemetry through OpenTelemetry.

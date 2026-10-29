@@ -58,6 +58,38 @@ language module holds no page that the English module does not have.
 
 If a change could go upstream, make it upstream.
 
+## Writing style
+
+Write the product text in this repository, the pages and partials in
+`product-specific/` directories, to these standards:
+
+- The SUSE Style Guide. The AI prompts for it are in
+  `product-docs-common/ai-prompts/suse-style-guide/`, a submodule of
+  `product-docs-common`. To get them, run
+  `git submodule update --init --recursive`. `Style-Guide-onefile.md` is the
+  short version. The full guide is at
+  <https://documentation.suse.com/style/current/>.
+- ASD-STE100 Simplified Technical English (STE): one idea for each sentence,
+  short sentences, active voice, simple words, and no phrasal verbs.
+
+The most frequent points:
+
+- Use no serial comma: "learn, monitor and protect".
+- Write H2 and H3 headings as natural-language questions where they fit, in
+  sentence case, with no trademarks. Make sibling headings parallel.
+- Start a page with a direct answer of 40 to 80 words. Do not start with
+  "This page explains".
+- Write `:description:` as one complete sentence of 120 to 155 characters,
+  with no full stop at the end.
+- Expand an acronym on first use.
+- Give tables, figures and sections short IDs from their titles. Use the
+  prefixes `tab-` and `fig-`, and no prefix for sections.
+- Present SUSE Security as one integrated product, installed with one Helm
+  chart. Do not write that the components can be used on their own. That is
+  community messaging.
+
+Upstream content follows the conventions of `kubewarden/docs`.
+
 ## Build and preview
 
 ```bash

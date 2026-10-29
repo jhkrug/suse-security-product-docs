@@ -4,6 +4,8 @@
 include::partial$product-specific/landing-release-refs.adoc[]
 
 * xref:introduction.adoc[Overview]
+* xref:product-specific/architecture.adoc[Architecture]
+* xref:product-specific/quick-start.adoc[Quick start]
 * Components
 ** xref:{landing-admc-ref}admission-controller:en:introduction.adoc[{admc-short-name}]
 ** xref:{landing-sboms-ref}sbom-scanner:en:introduction.adoc[{sboms-short-name}]

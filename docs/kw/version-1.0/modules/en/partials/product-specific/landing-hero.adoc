@@ -1,0 +1,4 @@
+// The last paragraph of the landing page hero in the product build: links to
+// the pages for SUSE Security as a whole, in bold.
+Explore the *xref:product-specific/architecture.adoc[architecture]* of {kw-name}.
+*xref:product-specific/quick-start.adoc[Install]* it with the quick start.
