@@ -3,11 +3,17 @@
 SHELL := /bin/bash
 .SHELLFLAGS := -o pipefail -c
 
+# Optional PDF build, from dsc-style-bundle. pdf-options.yml activates it.
+DSC ?= dsc-style-bundle
+-include $(DSC)/pdf/pdf.mk
+
 .PHONY: all
 all:
 	@echo "Available targets:"
 	@echo "  product-local              Build the local product docs site for local workstation test"
 	@echo "  product-remote             Build the remote product docs site (as would happen on GH)"
+	@echo "  local-pdf                  Build the PDFs into build/pdf (needs pdf-options.yml)"
+	@echo "  pdf-tools                  Install the PDF tools in tmp/pdf-tools"
 	@echo "  preview                    Preview the local product docs site"
 	@echo "  dev                        Rebuild on file change and live-reload the browser"
 	@echo "  clean                      Clean build artifacts"
@@ -21,7 +27,7 @@ product-local: tmpdir environment build-product-local
 .PHONY: build-product-local
 build-product-local:
 	npx antora --version | tee tmp/build.log
-	npx antora --stacktrace --log-format=pretty --log-level=info \
+	npx antora --stacktrace --log-format=pretty --log-level=info $(PDF_ANTORA_ARGS) \
 		local-product-playbook.yml \
 		2>&1 | tee -a tmp/build.log
 	$(MAKE) post-process
@@ -33,7 +39,7 @@ build-product-local:
 .PHONY: product-remote
 product-remote: tmpdir environment
 	npx antora --version | tee tmp/build.log
-	npx antora --stacktrace --log-format=pretty --log-level=info \
+	npx antora --stacktrace --log-format=pretty --log-level=info $(PDF_ANTORA_ARGS) \
 		remote-product-playbook.yml \
 		2>&1 | tee -a tmp/build.log
 	$(MAKE) post-process
