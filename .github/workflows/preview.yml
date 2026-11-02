@@ -30,8 +30,18 @@ jobs:
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: "24"
+      # The PDF build (dsc-style-bundle/pdf) needs Ruby. pdf-options.yml
+      # activates it.
+      - name: Install Ruby
+        uses: ruby/setup-ruby@de492cf36cbab201753d720ce4f4e336cd688c94 # v1.336.0
+        with:
+          ruby-version: "4.0"
       - name: Install Antora with the Antora Lunr Extension
         run: make environment
+      # Before the site build: the site build adds the PDFs and the PDF links
+      # from build/pdf/.
+      - name: Generate PDFs
+        run: make pdf PDF_PLAYBOOK=remote-product-playbook.yml
       - name: Generate Site
         run: make product-remote
       - name: Upload Artifacts

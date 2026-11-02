@@ -1,0 +1,22 @@
+# PDF build of the SUSE Security releases. dsc-style-bundle/pdf/pdf.mk and
+# dsc-style-bundle/pdf/antora-pdf.js read this file.
+#
+# mode:
+#   none:        no PDF (the same as no file)
+#   local:       make local-pdf builds the PDFs into build/pdf/ (and copies
+#                them into build/site/ if it exists). Pages do not link to them.
+#   deliverable: run make pdf first. Then make product-local and make
+#                product-remote add the PDFs and a PDF link on each page.
+mode: deliverable
+
+# The release config of the release-url-layout extension.
+release_config: suse-security-release-config.yml
+
+# latest (the newest release that is not a prerelease), all, or a list.
+releases: latest
+
+languages: [en, de, es, fr, ja, pt, zh]
+
+print:
+  show_urls: true     # print the URL after each web link
+  printed_date: true  # "Printed <date> <time>" on the title page and in the footer
