@@ -17,6 +17,10 @@ releases: latest
 
 languages: [en, de, es, fr, ja, pt, zh]
 
+# The site for web links in the PDFs: links to pages that are not in the
+# PDF. Change it when the production site is published.
+site_url: https://rancher.github.io/suse-security-product-docs
+
 print:
   show_urls: true     # print the URL after each web link
   printed_date: true  # "Printed <date> <time>" on the title page and in the footer
