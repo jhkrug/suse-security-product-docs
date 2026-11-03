@@ -123,3 +123,25 @@ reference to missing attribute` line in `tmp/build.log`.
 The published site is built by
 [rancher/product-docs-playbook](https://github.com/rancher/product-docs-playbook),
 not by the playbooks in this repository.
+
+### PDFs
+
+`pdf-options.yml` activates the PDF build of `dsc-style-bundle/pdf/`. Refer
+to `dsc-style-bundle/pdf/README.md`.
+
+```bash
+# Build the PDFs into build/pdf/ (and copy them into build/site/ if it exists)
+make local-pdf
+
+# Then build the site with the PDFs and the PDF links
+make product-local
+```
+
+- The mode is `deliverable`. The preview workflow (`.github/workflows/preview.yml`)
+  runs `make pdf` before `make product-remote`.
+- There is one PDF for each language of the latest release: the landing
+  pages, then each component. A component without a translation is in
+  English.
+- The first `make local-pdf` installs the tools and fonts in `tmp/pdf-tools/`.
+- `site_url` is the preview site. Change it when the production site is
+  published.
