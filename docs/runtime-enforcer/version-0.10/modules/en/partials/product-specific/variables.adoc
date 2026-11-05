@@ -1,3 +1,7 @@
 // Here goes version specific, product-specific shared attributes and content
 
 // {runtime-enforcer-helm-chart} comes from shared product-specific/rte-variables.adoc.
+
+// Current upstream release tag, used by the kubectl plugin download URL.
+// This assumes the product versions are the same as upstream.
+:release-tag: v0.10.1

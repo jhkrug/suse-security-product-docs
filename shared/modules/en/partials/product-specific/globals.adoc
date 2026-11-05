@@ -58,3 +58,13 @@
 :docs-repo-name: kubewarden/docs
 :docs-repo-url: https://github.com/{docs-repo-name}
 :docs-team-url: https://github.com/orgs/kubewarden/teams/kubewarden-documentation
+
+// Deployment values shared by all components: the Helm chart repository
+// and the OCI registry for container images and charts. The product
+// publishes its charts only as OCI artifacts, so the Helm repository is
+// the OCI chart repository. Component attributes build on these, for
+// example `<key>-chart-location` in <key>-variables.adoc.
+:oci-registry: dp.apps.rancher.io
+:oci-chart-repo: {oci-registry}/charts
+:helm-repo-url: oci://{oci-chart-repo}
+:helm-repo-name: suse-security
