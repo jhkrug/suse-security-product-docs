@@ -46,6 +46,10 @@ antora:
     - require: ./product-docs-common/extensions/release-url-layout/release-url-layout.js
     - require: ./product-docs-common/extensions/versions-latest-prerelease/vlp.js
       enabled: true
+    # After release-url-layout, which moves the images that this extension links to.
+    - id: image-dedup
+      require: ./product-docs-common/extensions/image-dedup/image-dedup.js
+      enabled: true
 
 output:
   dir: build/site
