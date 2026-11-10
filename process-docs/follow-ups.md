@@ -87,6 +87,9 @@ the upstream community repository. Remove an item when it is done.
 - **Sync: schedule.** The `Sync with kubewarden/docs` workflow runs
   `scripts/sync.py` on demand and opens a sync pull request. Add a
   `schedule:` trigger when the on-demand runs work well.
+- **Hauler manifest: schedule.** The `Update Hauler manifest` workflow runs
+  on demand only. Its `schedule:` trigger is commented out. Enable it when
+  the on-demand runs work well.
 - **Sync: hardening.** [what-can-go-wrong.md](what-can-go-wrong.md) lists
   how the sync can fail or give a wrong result. It also lists the changes
   that make the sync safer.

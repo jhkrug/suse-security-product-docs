@@ -1,0 +1,25 @@
+---
+# Source paths are relative to the root of the source repository.
+# The destination files go into docs/<component>/version-<dev>/<subpath>/.
+# The dev version is the one version whose antora.yml has the key prerelease.
+source:
+  owner: rancher
+  repository: suse-security
+  branch: main
+  manifest: hauler-manifest/hauler_manifest.yaml
+  bundle: hauler-manifest/hauler_manifest.sigstore.json
+destination:
+  component: admission-controller
+  subpath: modules/en/attachments/product-specific
+  manifest: hauler_manifest.yaml
+  bundle: hauler_manifest.sigstore.json
+scm:
+  owner: rancher
+  repository: suse-security-product-docs
+  branch: main
+  footer: "Signed-off-by: updatecli-bot <updatecli-bot@users.noreply.github.com>"
+pr:
+  title: "Update Hauler manifest"
+  labels:
+    - "kind/chore"
+    - "area/documentation"

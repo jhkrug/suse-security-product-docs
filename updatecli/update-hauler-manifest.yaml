@@ -1,0 +1,99 @@
+name: "Update Hauler manifest"
+
+scms:
+  source:
+    kind: "github"
+    spec:
+      owner: "{{ .source.owner }}"
+      repository: "{{ .source.repository }}"
+      branch: "{{ .source.branch }}"
+  target:
+    kind: "github"
+    spec:
+      owner: "{{ .scm.owner }}"
+      repository: "{{ .scm.repository }}"
+      branch: "{{ .scm.branch }}"
+      commitusingapi: true
+      submodules: false
+      commitmessage:
+        hidecredit: true
+        footers: "{{ .scm.footer }}"
+
+sources:
+  manifest:
+    name: "Read the Hauler manifest"
+    kind: file
+    scmid: source
+    spec:
+      file: "{{ .source.manifest }}"
+  bundle:
+    name: "Read the Hauler manifest cosign bundle"
+    kind: file
+    scmid: source
+    spec:
+      file: "{{ .source.bundle }}"
+  devVersion:
+    name: "Find the dev version of {{ .destination.component }}"
+    kind: shell
+    scmid: target
+    spec:
+      environments:
+        - name: PATH
+      # The job reads the dev version from the docs tree at each run, so nobody
+      # has to change a path when a new docs version opens. If the number of
+      # versions with `prerelease:` is not 1, the job stops. It never writes
+      # into the wrong version.
+      command: |
+        #!/bin/sh
+        COMPONENT_DIR="docs/{{ .destination.component }}"
+
+        DEV_VERSION=""
+        DEV_COUNT=0
+
+        for dir in ${COMPONENT_DIR}/version-*/; do
+          [ -f "${dir}antora.yml" ] || continue
+          grep -q "prerelease:" "${dir}antora.yml" || continue
+
+          DEV_COUNT=$((DEV_COUNT + 1))
+          [ -n "$DEV_VERSION" ] || DEV_VERSION=$(basename "$dir" | sed 's/^version-//')
+        done
+
+        if [ "$DEV_COUNT" -ne 1 ]; then
+          echo "${COMPONENT_DIR}: expected exactly 1 dev version directory with 'prerelease:', found ${DEV_COUNT}" >&2
+          exit 1
+        fi
+
+        echo "$DEV_VERSION"
+
+targets:
+  manifest:
+    name: "updates {{ .destination.manifest }} file"
+    kind: file
+    scmid: target
+    sourceid: manifest
+    spec:
+      file: 'docs/{{ .destination.component }}/version-{{ source "devVersion" }}/{{ .destination.subpath }}/{{ .destination.manifest }}'
+      forcecreate: true
+  bundle:
+    name: "updates {{ .destination.bundle }} file"
+    kind: file
+    scmid: target
+    sourceid: bundle
+    spec:
+      file: 'docs/{{ .destination.component }}/version-{{ source "devVersion" }}/{{ .destination.subpath }}/{{ .destination.bundle }}'
+      forcecreate: true
+
+actions:
+  default:
+    kind: "github/pullrequest"
+    scmid: "target"
+    spec:
+      merge:
+        strategy: manual
+      title: "{{ .pr.title }}"
+# {{ if .pr.labels }}
+      labels:
+# {{ range .pr.labels }}
+        - "{{ . }}"
+# {{ end }}
+# {{ end }}
