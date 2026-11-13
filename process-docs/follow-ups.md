@@ -19,6 +19,51 @@ the upstream community repository. Remove an item when it is done.
 - **Network Enforcer chart.** `{network-enforcer-helm-chart}` is a guess,
   `oci://dp.apps.rancher.io/charts/suse-security-network-enforcer`. No page
   uses it at the moment.
+- **Hauler manifest signing identity.** `:hauler-manifest-cert-identity:` in
+  the `admission-controller` 1.39 `variables.adoc` is an exact identity. It is
+  correct because the signing workflow in `rancher/suse-security` signs only
+  on `main`. If the workflow ever signs from tags or from a reusable
+  workflow, change the identity. Use `--certificate-identity-regexp` with
+  `--certificate-github-workflow-repository` and
+  `--certificate-github-workflow-ref`, and add the values as attributes. Also
+  state a minimum cosign version, after you test it with the real bundle.
+- **Hauler manifest attachments.** The links to the manifest and the bundle in
+  `airgap-hauler-download.adoc` stay broken until the first pull request of
+  the `Update Hauler manifest` workflow is merged. Merge in this order: the
+  first signed manifest pull request in `rancher/suse-security`, the copy
+  workflow of this repository and its first pull request, which adds the
+  attachments, and only then the docs pages that link the files. Until then, the English build logs
+  two `target of xref not found` errors. When a sync refreshes the language
+  placeholders, each language build logs the two errors, 14 in total. The
+  script `scripts/build-report.sh` then makes the sync pull requests drafts.
+- **Hauler example image names.** The example image names are now in the text
+  of the upstream page `pages/howtos/airgap/02-hauler.adoc`, section
+  "Generate the tarball file". They show `policy-server` and kyverno, for
+  example. The product image names are different, for example
+  `kubewarden-policy-server`. Decide if the page text needs a product version.
+  The "Install" section of the same page also tells users to set the
+  `PolicyServer` image to
+  `<REGISTRY>/{default-oci-admcontroller-container-namespace}/policy-server:{release-tag}`.
+  In the product build this name is wrong, because the product image is
+  `kubewarden-policy-server` (see `{default-policy-server-image}`). This is a
+  real error in a step that users follow, not only an example. Fix it
+  upstream, for example with an attribute for the image name.
+- **Hauler partials in new versions.** `scripts/sync.py` copies only the `en`
+  product-specific files to a new component version (`new_versions`). The
+  language placeholders `02-hauler.adoc` and `01-requirements.adoc` of the
+  next version need
+  `partials/product-specific/airgap-hauler-download.adoc` and
+  `partials/product-specific/airgap-extra-requirements.adoc` in each language
+  module. Without them, the build fails.
+- **Air gap pages in the language modules.** The language modules are not
+  changed yet. When a sync refreshes the language placeholders
+  `02-hauler.adoc` and `01-requirements.adoc` to the new upstream pages, each
+  language module needs `partials/product-specific/airgap-hauler-download.adoc`
+  and `partials/product-specific/airgap-extra-requirements.adoc`, copies of
+  the English files. Without them, the build fails. Run
+  `scripts/sync.py copies`, so that the language variables get
+  `:hauler-manifest-*:`. The translated `01-requirements.adoc` pages do not
+  show the cosign item until they are translated again.
 
 ## Content
 
