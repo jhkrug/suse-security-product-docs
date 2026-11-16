@@ -78,6 +78,15 @@ the upstream community repository. Remove an item when it is done.
   All versions from 1.28 to 1.39 have them, in English and in the
   translations. Fix the dev version upstream. The translations get the fix
   from the next translation run.
+- **Policy Server CLI translations.** The translation process damaged the
+  passthrough markup in `admission-controller` `reference/policy-server-cli.adoc`.
+  This occurred in all languages, in versions 1.34 to 1.39. Literal `+`
+  characters showed in the inline code, for example
+  `policy-server [+OPTIONS+]`. The translated pages were fixed by hand,
+  because the fix changes only markup. The cause is the old English source
+  (1.35 and earlier), which escapes each special character as `++[++`. The
+  English pages of 1.36 and later use plain text. If a translation run from
+  the old English source occurs again, examine the result for this damage.
 - **Runtime Enforcer quick start.** The quick start uses
   `helm repo add ... {runtime-enforcer-helm-chart}`. The product chart is an
   `oci://` reference, which `helm repo add` does not accept.
