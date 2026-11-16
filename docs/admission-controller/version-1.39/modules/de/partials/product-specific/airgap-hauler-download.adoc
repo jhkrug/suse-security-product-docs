@@ -1,0 +1,78 @@
+To use the Hauler manifest, do these steps:
+
+. Download the manifest and its signature bundle from the links in the next section.
+. Verify the manifest.
+. Sync all the resources that {admc-short-name} needs to a local Hauler store.
+. Export the store to a file.
+. Move the file into your air-gapped environment.
+. Load the file into the Hauler store in your air-gapped environment.
+. Copy the resources to a registry in your air-gapped environment. The
+  installation uses this registry.
+. Install {admc-short-name} from the registry in your air-gapped environment.
+
+[#_download_the_hauler_manifest]
+== Download the Hauler manifest
+
+Download the Hauler manifest,
+xref:en:attachment$product-specific/{hauler-manifest-file}[`{hauler-manifest-file}`].
+Also download the cosign signature bundle,
+xref:en:attachment$product-specific/{hauler-manifest-bundle}[`{hauler-manifest-bundle}`].
+The bundle holds the signing certificate and the entry in the Sigstore
+transparency log, a public record of each signature.
+
+[#_verify_the_hauler_manifest]
+== Verify the Hauler manifest
+
+Hauler verifies the artifacts in the manifest. It does not verify the manifest
+file itself. Before you sync the manifest, use cosign to verify that the file
+is intact and that SUSE signed it:
+
+[source,shell,subs="+attributes"]
+----
+cosign verify-blob \
+  --bundle {hauler-manifest-bundle} \
+  --certificate-identity "{hauler-manifest-cert-identity}" \
+  --certificate-oidc-issuer "{hauler-manifest-oidc-issuer}" \
+  {hauler-manifest-file}
+----
+
+If the verification passes, the command prints this output:
+
+[source,text]
+----
+Verified OK
+----
+
+[IMPORTANT]
+====
+If the command fails, do not use the manifest file. Download both files again.
+If the command still fails, contact SUSE support.
+====
+
+For more information about the verification of signatures, see the
+https://docs.sigstore.dev/cosign/verifying/verify/[Sigstore documentation].
+
+[#_sync_the_hauler_manifest]
+== Sync the Hauler manifest
+
+Log in to the SUSE Application Collection registry, `{default-oci-registry}`,
+with your Application Collection credentials:
+
+[source,shell,subs="+attributes"]
+----
+hauler login {default-oci-registry} --username <your-username> --password-stdin
+----
+
+The command reads the access token from the standard input. Type the token,
+then press Ctrl+D.
+
+Sync the resources in the manifest to your Hauler store:
+
+[source,shell,subs="+attributes"]
+----
+hauler store sync --filename {hauler-manifest-file}
+----
+
+Hauler downloads all the resources in the manifest to the local store. The
+sync takes a few minutes. When the sync is complete, run `hauler store info`
+to see the synced resources.

@@ -19,3 +19,11 @@
 // See follow-ups.adoc in the repository root.
 :release-tag: v1.38.2
 :chart-version: 6.1.0
+
+// The file names must match the destination file names in
+// updatecli/values.d/hauler-manifest.yaml. The identity is the workflow in
+// rancher/suse-security that signs the manifest.
+:hauler-manifest-file: hauler_manifest.yaml
+:hauler-manifest-bundle: hauler_manifest.sigstore.json
+:hauler-manifest-cert-identity: https://github.com/rancher/suse-security/.github/workflows/update-hauler-manifest.yml@refs/heads/main
+:hauler-manifest-oidc-issuer: https://token.actions.githubusercontent.com
