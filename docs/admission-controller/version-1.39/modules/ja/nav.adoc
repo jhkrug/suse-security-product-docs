@@ -90,6 +90,7 @@ endif::[]
 ** xref:howtos/policies.adoc[]
 ** xref:howtos/policies-eval-resources-in-controller-namespace.adoc[]
 ** xref:howtos/emergency-disable.adoc[]
+** xref:howtos/certificate-recovery.adoc[]
 ** ポリシーサーバーの設定
 *** xref:howtos/policy-servers/01-custom-cas.adoc[カスタムCAの使用]
 *** xref:howtos/policy-servers/02-private-registry.adoc[]

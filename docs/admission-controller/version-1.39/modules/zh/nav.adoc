@@ -90,6 +90,7 @@ endif::[]
 ** xref:howtos/policies.adoc[]
 ** xref:howtos/policies-eval-resources-in-controller-namespace.adoc[]
 ** xref:howtos/emergency-disable.adoc[]
+** xref:howtos/certificate-recovery.adoc[]
 ** 配置策略服务器
 *** xref:howtos/policy-servers/01-custom-cas.adoc[使用自定义 CA]
 *** xref:howtos/policy-servers/02-private-registry.adoc[]

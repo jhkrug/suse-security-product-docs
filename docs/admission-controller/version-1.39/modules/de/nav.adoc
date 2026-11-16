@@ -90,6 +90,7 @@ endif::[]
 ** xref:howtos/policies.adoc[]
 ** xref:howtos/policies-eval-resources-in-controller-namespace.adoc[]
 ** xref:howtos/emergency-disable.adoc[]
+** xref:howtos/certificate-recovery.adoc[]
 ** Konfigurieren von Richtliniendiensten
 *** xref:howtos/policy-servers/01-custom-cas.adoc[Verwendung benutzerdefinierter CAs]
 *** xref:howtos/policy-servers/02-private-registry.adoc[]
