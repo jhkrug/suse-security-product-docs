@@ -15,7 +15,7 @@ release_config: suse-security-release-config.yml
 # latest (the newest release that is not a prerelease), all, or a list.
 releases: latest
 
-languages: [en, de, es, fr, ja, pt, zh]
+languages: [en]
 
 # The site for web links in the PDFs: links to pages that are not in the
 # PDF. Change it when the production site is published.
