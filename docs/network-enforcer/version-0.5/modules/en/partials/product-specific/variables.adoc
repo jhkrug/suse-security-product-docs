@@ -9,5 +9,5 @@
 
 // Current upstream release tag and published Helm chart version.
 // This assumes the product versions are the same as upstream.
-:release-tag: v0.3.0
-:chart-version: 0.1.3
+:release-tag: v0.4.0
+:chart-version: 0.1.4
