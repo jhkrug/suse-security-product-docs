@@ -9,8 +9,8 @@
 #                product-remote add the PDFs and a PDF link on each page.
 mode: deliverable
 
-# The release config of the release-url-layout extension.
-release_config: suse-security-release-config.yml
+# The product file: shared/modules/ROOT/partials/releases/<product>.yml.
+product: suse-security
 
 # latest (the newest release that is not a prerelease), all, or a list.
 releases: latest
