@@ -1,0 +1,6 @@
+// Product only: contributions go to the upstream community project. The
+// community repository has a community-specific/contribution-guide-intro.adoc.
+{admc-name} is derived from the {community-project-name} open-source project.
+Make your contributions, including changes to this documentation, in the
+upstream {community-project-name} project. Please review the
+https://github.com/kubewarden/community/blob/main/CONTRIBUTING.md[{community-project-name} contributing guide].
