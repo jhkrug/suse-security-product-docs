@@ -1,0 +1,39 @@
+---
+name: "Update Hauler manifest"
+
+on:
+  workflow_dispatch:
+  # The schedule is off for now. Enable it later.
+  # schedule:
+  #   - cron: "0 0 * * 1,3"
+
+concurrency:
+  group: update-hauler-manifest
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  hauler-manifest:
+    name: Update Hauler manifest
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout docs
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Install Updatecli Binary
+        uses: updatecli/updatecli-action@93ae2608256484ef8598e902aa675bbc9e278e4e # v3.10.0
+
+      - name: Run Updatecli to update the Hauler manifest
+        run: >-
+          updatecli apply
+          --config updatecli/update-hauler-manifest.yaml
+          --values updatecli/values.d/hauler-manifest.yaml
+        env:
+          UPDATECLI_GITHUB_APP_CLIENT_ID: ${{ secrets.APP_ID }}
+          UPDATECLI_GITHUB_APP_PRIVATE_KEY: ${{ secrets.APP_PRIVATE_KEY }}
+          UPDATECLI_GITHUB_APP_INSTALLATION_ID: "${{ secrets.APP_INSTALLATION_ID }}"
