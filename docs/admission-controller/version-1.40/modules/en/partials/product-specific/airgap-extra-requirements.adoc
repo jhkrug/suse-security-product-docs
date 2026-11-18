@@ -1,0 +1,5 @@
+// The upstream requirements page includes only the items region. Keep only
+// list items in it.
+// tag::items[]
+. link:https://docs.sigstore.dev/cosign/system_config/installation/[cosign] to verify the Hauler manifest.
+// end::items[]
