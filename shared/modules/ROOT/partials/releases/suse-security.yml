@@ -1,6 +1,7 @@
 # SUSE Security releases.
 #
-# Each release pins one version of each component. Two tools read this file:
+# Each release pins one version of each component. Three tools read this
+# file:
 #
 # - The productreleases helper in dsc-style-bundle: the "Component /
 #   version" selector and the page version menu show the SUSE Security
@@ -12,11 +13,15 @@
 #   oldest of them. Component versions that no release pins are not built.
 #   /<url_prefix>/latest links to the newest release that is not a
 #   prerelease, and /<url_prefix>/dev to the newest prerelease, if any.
+# - The PDF build in dsc-style-bundle (product: suse-security in
+#   pdf-options.yml): one PDF for each selected release and language.
+#
+# The file name is the product name and the default url_prefix.
 #
 # product:
 #   component:       the Antora component of the landing page
 #   landing_version: the version of that component to publish for each release
-#   url_prefix:      the first URL segment of the releases
+#   url_prefix:      optional, the first URL segment of the releases
 # releases, newest first:
 #   version:    the release, for example '6.0.1'
 #   prerelease: optional, true or false. Must be true if the release pins a
@@ -29,7 +34,6 @@
 product:
   component: kubewarden
   landing_version: '1.0'
-  url_prefix: suse-security
 
 releases:
   - version: '6.0.0'

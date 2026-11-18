@@ -29,8 +29,8 @@ concerns:
 ## How SUSE Security releases work
 
 A SUSE Security release pins one version of each component.
-[`suse-security-release-config.yml`](../shared/modules/en/partials/product-specific/suse-security-release-config.yml)
-lists the releases. Two tools read this file:
+[`suse-security.yml`](../shared/modules/ROOT/partials/releases/suse-security.yml)
+lists the releases. Three tools read this file:
 
 - The `productreleases` helper in `dsc-style-bundle`. The "Component /
   version" selector shows the SUSE Security releases, and a dropdown with the
@@ -43,6 +43,9 @@ lists the releases. Two tools read this file:
   each release. Its
   [README](https://github.com/rancher/product-docs-common/blob/main/extensions/release-url-layout/README.md)
   describes the configuration and the rules.
+- The PDF build in `dsc-style-bundle`. It makes one PDF for each selected
+  release and language. `product: suse-security` in `pdf-options.yml`
+  selects the file.
 
 The landing page sets the attributes `release-version` and
 `release-<component>-version`. These product partials in
