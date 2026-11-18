@@ -38,15 +38,15 @@ product:
 releases:
   - version: '6.0.0'
     components:
-      admission-controller: '1.38'
+      admission-controller: '1.39'
       sbom-scanner: '0.13'
       runtime-enforcer: '0.10'
-      network-enforcer: '0.3'
+      network-enforcer: '0.4'
   # Demo only: an older release, to try the release selectors. Remove before
   # publishing.
   - version: '5.9.9'
     components:
-      admission-controller: '1.37'
+      admission-controller: '1.38'
       sbom-scanner: '0.12'
       runtime-enforcer: '0.9'
-      network-enforcer: '0.2'
+      network-enforcer: '0.3'
