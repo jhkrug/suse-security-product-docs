@@ -75,7 +75,7 @@ SECTIONS = [
     ("Conflicts", "Changed upstream and here, with merge conflicts. The local file is kept. Merge by hand.", True),
     ("Translations", "Language module changes that follow the English changes.", False),
     ("Release tags", "Product variables to bump.", False),
-    ("Manual follow-up", "The script cannot do these.", True),
+    ("Manual follow-up", "The script cannot do these. Each one needs a decision or product text from a person. Each item says why, and what to do.", True),
     ("Stale translations", "Translated pages whose English page changes. The translation process updates them.", False),
     ("Product layer", "Upstream changed community-specific files. The product counterparts exist. Check them.", False),
     ("Upstream build changes", "Not copied. They change how upstream builds. Check whether the product build needs the same change.", True),
@@ -242,6 +242,19 @@ def product_antora(upstream, local):
 
 # Plan --------------------------------------------------------------------
 
+class Item(str):
+    """A report line. The details are sub-items in the report. The attention
+    list at the top of the sync pull request shows only the line."""
+
+    details = ()
+
+
+def version_of(vdir):
+    """The version of a version directory, for example 1.39 for
+    docs/admission-controller/version-1.39."""
+    return vdir.rsplit("/version-", 1)[-1]
+
+
 class Plan:
     def __init__(self, base, head, local):
         self.base, self.head, self.local = base, head, local
@@ -261,8 +274,37 @@ class Plan:
         self.ops = []
         self.has_changes = False
 
-    def add(self, section, line):
+    def add(self, section, line, details=()):
+        if details:
+            line = Item(line)
+            line.details = list(details)
         self.sections[section].append(line)
+
+    def other_product_versions(self, product):
+        """Other versions of the same component that have the product file
+        product, newest first."""
+        m = VERSION_DIR_RE.match(product)
+        if not m:
+            return []
+        rest = product[m.end():]
+        found = {v for p in self.lt if (v := VERSION_DIR_RE.match(p)) and p[v.end():] == rest and v.group(1) == m.group(1)}
+        return sorted((v.group(0).rstrip("/") for v in found if v.group(0) != m.group(0)), key=version_key, reverse=True)
+
+    def missing_product_file(self, section_line, product, community):
+        """A Manual follow-up for a product file that does not exist."""
+        if "/images/" in product:
+            details = [
+                "Pages show the image with a `{build-type}-specific/...` path, so the product build has a missing image until the product file exists.",
+                "The script cannot make product images. Add the product image. Use the community image as a model.",
+            ]
+        else:
+            details = [
+                "Pages include the file with `{build-type}-specific/...`, so the product build has a missing include until the product file exists.",
+                "The script cannot write product text. Write the product version of the text. Use the community file as a start.",
+            ]
+        if others := self.other_product_versions(product):
+            details.append(f"Other versions have this product file: {', '.join(f'`{v}`' for v in others)}. If the text is the same, copy it from there.")
+        self.add("Manual follow-up", section_line, details)
 
     def op(self, phase, *args):
         self.ops.append((phase, *args))
@@ -509,11 +551,17 @@ class Plan:
                 if name not in new or old.get(name) == new[name]:
                     continue
                 if product not in self.lt:
-                    self.add("Manual follow-up", f"`{product}` is missing; upstream sets `{name}` to `{new[name]}`")
+                    self.add("Manual follow-up", f"`{product}` does not exist, so the script cannot set `{name}` to `{new[name]}`.", [
+                        "The script changes only files that exist.",
+                        f"Create `{product}` with the product values of this version, or copy it from an older version. Then set `{name}`.",
+                    ])
                 elif current.get(name) == new[name]:
                     self.add("Already applied", f"`{product}` `{name}` is `{new[name]}`")
                 elif name not in current:
-                    self.add("Manual follow-up", f"`{product}` has no `{name}`; upstream sets it to `{new[name]}`")
+                    self.add("Manual follow-up", f"`{product}` does not define `{name}`. Upstream sets it to `{new[name]}`.", [
+                        "The script changes only attributes that exist.",
+                        f"Add `:{name}: {new[name]}` to `{product}` if the product uses the upstream value. Else add the product value.",
+                    ])
                 else:
                     self.op(4, "setattr", product, name, new[name])
                     note = "" if current[name] == old.get(name) else f" (upstream was `{old.get(name)}`)"
@@ -566,7 +614,10 @@ class Plan:
         for name in sorted(set(after) - set(before)):
             if name in ("release-tag", "chart-version") or name in defined:
                 continue
-            self.add("Manual follow-up", f"upstream adds `:{name}:` to `{path}` (value `{after[name]}`): no product file defines it. Add it, for example to `{product}`")
+            self.add("Manual follow-up", f"Upstream adds `:{name}:` (value `{after[name]}`) to `{path}`. No product file defines it.", [
+                f"The product build does not read `{path}`. Pages that use `{{{name}}}` give a missing attribute warning.",
+                f"The script cannot know the product value. Add `:{name}:` to a product file, for example `{product}`. The value can be the same as upstream.",
+            ])
         for name in sorted(set(before) - set(after)):
             if name in defined:
                 self.add("Product layer", f"upstream removes `:{name}:` from `{path}`; `{defined[name]}` still defines it. Remove it if nothing uses it")
@@ -584,11 +635,14 @@ class Plan:
         elif status == "R":
             oldp = old.replace("/community-specific/", "/product-specific/")
             if oldp in self.lt and not exists:
-                self.add("Manual follow-up", f"`{old}` moved upstream to `{path}`: move `{oldp}` too")
+                self.add("Manual follow-up", f"Upstream moved `{old}` to `{path}`. Move `{oldp}` to `{product}` too.", [
+                    "The script does not move product files.",
+                    f"After the move, check that no file still uses the old path `{oldp}`.",
+                ])
             elif not exists:
-                self.add("Manual follow-up", f"`{path}` moved upstream: create `{product}`")
+                self.missing_product_file(f"Upstream moved `{old}` to `{path}`. `{product}` does not exist.", product, path)
         elif not exists:
-            self.add("Manual follow-up", f"`{path}` {'added' if status == 'A' else 'changed'} upstream: create `{product}`")
+            self.missing_product_file(f"Upstream {'added' if status == 'A' else 'changed'} `{path}`. `{product}` does not exist.", product, path)
         elif not (status == "M" and path.endswith("/variables.adoc")):
             self.add("Product layer", f"`{path}` {'added' if status == 'A' else 'changed'} upstream: check `{product}`")
 
@@ -610,8 +664,23 @@ class Plan:
             for p in files:
                 self.op(3, "copy", p, vdir + p[len(src):])
                 self.planned.add(vdir + p[len(src):])
-            self.add("Manual follow-up", f"`{vdir}` is new: its product-specific layer is copied from `{src}` ({len(files)} files). Review the values")
+            self.new_version_follow_up(vdir, src, files)
             self.product_title(vdir, src)
+
+    def new_version_follow_up(self, vdir, src, files):
+        old_version, new_version = version_of(src), version_of(vdir)
+        details = [
+            "The script cannot know which product values change in the new version.",
+            "Check the copied `variables.adoc`: registries, Helm charts, namespaces and image tags. "
+            "The script sets only `release-tag` and `chart-version` from upstream. The \"Release tags\" section lists them.",
+        ]
+        rx = re.compile(rf"(?<![\d.]){re.escape(old_version)}(?![\d])")
+        named = [p[len(src) + 1:] for p in files if Path(p).suffix == ".adoc" and rx.search(text(self.local, p))]
+        if named:
+            details.append(f"These copied files contain `{old_version}`. Check if they must name `{new_version}`: {', '.join(f'`{p}`' for p in named)}.")
+        if self.langs.get(src):
+            details.append("The script copies only the English files. The translation process makes the files of the language modules.")
+        self.add("Manual follow-up", f"`{vdir}` is new. The script copied the product-specific layer of `{src}` ({len(files)} files). Review the copied values.", details)
 
     def product_title(self, vdir, src):
         """Give a new component version the product title of the version before it."""
@@ -627,11 +696,19 @@ class Plan:
         self.add("Apply", f"set the product `{title}` in `{path}`, as in `{src_path}`")
 
     def new_component(self, comp, vdir):
-        self.add("Manual follow-up", f"`{vdir}` is in a new component, `{comp}`: create its product-specific layer, and decide its product `title:`")
+        self.add("Manual follow-up", f"`{vdir}` is in a new component, `{comp}`. Create its product-specific layer.", [
+            "The script cannot write the product layer of a new component.",
+            "Create `variables.adoc` with the product values, and a product partial for each `{build-type}-specific` include.",
+            "Decide the product `title:` in `antora.yml`.",
+            "Add the component to `shared/modules/ROOT/partials/releases/suse-security.yml` when a release pins it.",
+        ])
         pattern = f"{comp}/version-*"
         for playbook in PLAYBOOKS:
             if playbook in git("ls-tree", "--name-only", self.local).split() and pattern not in text(self.local, playbook):
-                self.add("Manual follow-up", f"`{playbook}` does not build `{pattern}`: add it to `start_paths`, and to `product-docs-playbook`")
+                self.add("Manual follow-up", f"`{playbook}` does not build `{pattern}`.", [
+                    "The script does not change build files.",
+                    f"Add `{pattern}` to `start_paths` in `{playbook}`. Also add it to rancher/product-docs-playbook, which builds the published site.",
+                ])
 
     # Tooling -------------------------------------------------------------
 
@@ -754,7 +831,10 @@ class Plan:
                 lines += [f"<details><summary>{len(items)} files</summary>", ""]
                 lines += [f"- {item}" for item in items] + ["", "</details>", ""]
             else:
-                lines += [f"- {item}" for item in items] + [""]
+                for item in items:
+                    lines.append(f"- {item}")
+                    lines += [f"  - {detail}" for detail in getattr(item, "details", ())]
+                lines.append("")
         return "\n".join(lines)
 
 
@@ -853,7 +933,11 @@ def apply(plan, root):
             nav_remove(*args)
         elif kind == "nav_add":
             if not nav_add(*args):
-                plan.add("Manual follow-up", f"add `{args[1].strip()}` to `{args[0]}`: no anchor found")
+                plan.add("Manual follow-up", f"Add `{args[1].strip()}` to `{args[0]}`.", [
+                    "The script puts a new nav entry after the entry before it, or before the entry after it, as in the English `nav.adoc`. "
+                    "This nav has neither entry, or the file does not exist.",
+                    "Put the line in the same position as in the English `nav.adoc`.",
+                ])
         elif kind == "attr_rename":
             attr_rename(*args)
         elif kind == "setattr":
