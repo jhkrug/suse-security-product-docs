@@ -48,6 +48,11 @@ For why this repository exists and the design choices behind it, see
   for the community repository. The sync does not copy them.
 - `.upstream-ref`: the upstream commit of the last sync. A sync commit
   updates it. `scripts/sync.py` syncs from it.
+- `LICENSE` and `LICENSE-CODE`: the documentation is CC-BY-4.0, the same as
+  upstream, and the code and build files are Apache-2.0. The sync does not
+  copy them. `README.adoc` says which files have which license. Do not
+  change the documentation license to Apache-2.0: the upstream text is
+  CC-BY-4.0, and this repository cannot relicense it.
 - `process-docs/`: notes about this repository and its processes:
   - `PRODUCT-consideration.md`: why this repository exists, how the SUSE
     Security releases work, and the design of the sync.

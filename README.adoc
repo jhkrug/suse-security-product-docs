@@ -15,3 +15,18 @@ changes to go into our translation memory.
 Make all other PRs against the upstream repository. PRs here that do not
 change the exceptions are rejected. When a change is made upstream, the
 publishing process updates this repository automatically.
+
+== License
+
+This repository uses two licenses:
+
+* The documentation is licensed under the Creative Commons Attribution 4.0
+  International license (CC-BY-4.0), the same as the upstream repository.
+  See `LICENSE`. This includes the content in `docs/`, `shared/` and
+  `process-docs/`, and the other text files.
+* The code and the build files are licensed under the Apache License 2.0.
+  See `LICENSE-CODE`. This includes `scripts/`, `.github/`, `updatecli/`,
+  the `Makefile`, the playbooks, and the other configuration files.
+
+The submodules (`dsc-style-bundle` and `product-docs-common`) have their own
+licenses.
