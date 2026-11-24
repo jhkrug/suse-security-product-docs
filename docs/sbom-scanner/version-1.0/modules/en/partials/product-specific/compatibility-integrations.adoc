@@ -1,0 +1,17 @@
+// Product only: the integrations section of the compatibility page. The
+// community repository has a community-specific/compatibility-integrations.adoc.
+[#_rancher-integration]
+== Rancher Integration
+
+The chart declares the Rancher versions that it supports in its catalog
+annotations.
+
+[cols="2,2,6"]
+|===
+|Rancher Version |Status |Notes
+
+|*2.10.1 - 2.15.x*
+|✓ Supported
+|The range that the chart annotation `catalog.cattle.io/rancher-version`
+declares, up to 2.15.100.
+|===
