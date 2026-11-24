@@ -1,0 +1,10 @@
+// Here goes version specific, product-specific shared attributes and content
+
+// The project origin sentence, used by the introduction page. The product
+// text states that the component is part of the Kubewarden project.
+:intro-paragraph: {sboms-name} is part of link:https://kubewarden.io[{community-project-name}], a vendor neutral, https://cncf.io[CNCF] Sandbox project, originally created by https://www.rancher.com/[SUSE Rancher].
+
+// Current upstream release tag and published Helm chart version.
+// This assumes the product versions are the same as upstream.
+:release-tag: v0.13.0
+:chart-version: 0.13.0

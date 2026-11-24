@@ -1,0 +1,7 @@
+// A warning for users of product specific SUSE Security
+
+[WARNING]
+====
+This is a technical preview. Features may change, be removed, or not ship in the
+final release. Not intended for production use.
+====
