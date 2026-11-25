@@ -1,17 +1,23 @@
 // The installation section of the quick start in the product build. The
-// SUSE Security Helm chart installs all components. This component can also
-// be installed on its own, with its own chart.
+// default is the SUSE Security Helm chart, which installs all components.
+// Install this component on its own only with a SUSE Rancher Prime
+// subscription that includes it.
 
-You install {admc-short-name} as part of {product-project-name}. The
-{product-project-name} Helm chart installs all {product-project-name}
-components in one step. To install {product-project-name}, refer to
+You install {admc-short-name} as part of {product-project-name}. This is the
+default installation. The {product-project-name} Helm chart installs all
+{product-project-name} components in one step. To install
+{product-project-name}, refer to
 xref:kubewarden:en:product-specific/quick-start.adoc[Install
 {product-project-name}].
 
-[#_how_do_you_install_this_component_on_its_own]
-=== How do you install this component on its own?
+[#_when_do_you_install_this_component_on_its_own]
+=== When do you install this component on its own?
 
-You can also install {admc-short-name} on its own, with the
+Install {admc-short-name} on its own only if your SUSE Rancher Prime
+subscription includes {admc-short-name}. In all other cases, install
+{product-project-name}.
+
+To install {admc-short-name} on its own, use the
 `suse-security-admission-controller` Helm chart from the SUSE Application
 Collection.
 
