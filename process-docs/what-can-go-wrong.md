@@ -36,7 +36,7 @@ Most problems are loud. The risks are:
 | An attribute renamed that translated pages still use | Fixed when the English line differs only in the attribute names. Otherwise the build shows a missing attribute | Mostly loud |
 | A new component version | Copied. Its `antora.yml` gets the product `title:` of the version before it, and its product layer is copied from that version. The release tags are bumped in the copy | Loud: draft, to review the copied values |
 | A new component, a new `docs/<component>/` | Copied. The report asks for a product layer and title, and for each playbook whose `start_paths` do not include it | Loud: draft |
-| An old version deleted | The English and language files go. The product-specific files stay and can break the build | Loud (build), or orphan files |
+| An old version deleted or renamed | The English and language files go or move. The product-specific files stay. The report lists the version as "not in upstream" in each sync until a person deletes it | Loud: draft |
 | A page moved and changed so much that git sees a delete and an add | Rename detection uses a 40% similarity threshold, so most moves are seen. Otherwise the translations are kept, not deleted, and the report suggests the new page with the same file name | Loud: draft |
 | Build changes: `package.json`, the lockfile, `Makefile`, `.gitmodules`, the `docs-common` submodule, playbooks, `ui/` | Listed under "Upstream build changes". For a `docs-common` bump, the report compares it with `product-docs-common` | Loud: draft |
 | Other tooling changes: `AGENTS.md`, `.github/`, `updatecli/`, `scripts/` | Listed under "Upstream tooling to review" | Informational |

@@ -28,6 +28,8 @@ The rules come from process-docs/PRODUCT-consideration.md and AGENTS.md:
 - bump release-tag and chart-version in the product variables.adoc
 - start the product-specific layer of a new component version from the
   previous version
+- report local component versions that upstream no longer has (renamed or
+  deleted), because their product-specific files stay
 - list what needs a person: conflicts, product files to write, upstream
   tooling changes, stale translations
 
@@ -58,6 +60,7 @@ TOOLING_EXCLUDE = (".agents/", ".claude/", "archived-docs/", "tests/")
 BUILD_FILES = ("package.json", "package-lock.json", "Makefile", ".gitmodules", "docs-common")
 BUILD_DIRS = ("ui/", "kw-community-docs-supp-files/")
 PLAYBOOKS = ("local-product-playbook.yml", "remote-product-playbook.yml")
+RELEASES_FILE = "shared/modules/ROOT/partials/releases/suse-security.yml"
 # Rename detection threshold. Lower than the git default of 50%, so that more
 # pages that move and change are seen as moves, and their translations move.
 RENAME_THRESHOLD = "-M40%"
@@ -667,6 +670,46 @@ class Plan:
             self.new_version_follow_up(vdir, src, files)
             self.product_title(vdir, src)
 
+    def removed_versions(self, changes):
+        """Local component versions that upstream head does not have, with
+        the files that stay after the planned moves and deletes."""
+        def vdir_of(path):
+            m = path and VERSION_DIR_RE.match(path)
+            return m and m.group(0).rstrip("/")
+        upstream = {v for p in self.u1 if (v := vdir_of(p))}
+        renamed = {vdir_of(old): vdir_of(new) for status, old, new in changes if status == "R" and vdir_of(old) != vdir_of(new)}
+        releases = text(self.local, RELEASES_FILE) if RELEASES_FILE in self.lt else ""
+        gone = {op[2] for op in self.ops if op[1] in ("mv", "rm")}
+        for vdir in sorted({v for p in self.lt if (v := vdir_of(p))} - upstream):
+            comp, version = vdir.rsplit("/", 1)[0], version_of(vdir)
+            files = [p for p in self.lt if p.startswith(vdir + "/") and p not in gone]
+            if not files:
+                continue
+            kinds = defaultdict(int)
+            for p in files:
+                parts = module_parts(p)
+                kinds["language modules" if parts and parts[1] != "en" else "product-specific" if is_product(p) else "other"] += 1
+            target = renamed.get(vdir)
+            if target:
+                where = f"Upstream renamed it to `{target}` in this sync."
+            else:
+                newer = sorted((v for v in upstream if v.startswith(comp + "/")), key=version_key)
+                target = newer[-1] if newer else None
+                where = "Upstream renamed or deleted it." + (f" The newest upstream version is `{target}`." if target else "")
+            details = [
+                where,
+                f"The local directory still has {len(files)} files ({', '.join(f'{n} {k}' for k, n in sorted(kinds.items()))}). "
+                "The sync changes only files that upstream changes, so these files stay.",
+            ]
+            pin = re.compile(rf"^\s+{re.escape(comp.split('/', 1)[1])}:\s*['\"]?{re.escape(version)}['\"]?\s*$", re.M)
+            if pin.search(releases):
+                details.append(f"A release in `{RELEASES_FILE}` pins this version. Change the pin first.")
+            details.append(
+                (f"Compare the product files with `{target}`. " if target else "")
+                + f"If nothing is missing there, delete `{vdir}`."
+            )
+            self.add("Manual follow-up", f"`{vdir}` is not in upstream.", details)
+
     def new_version_follow_up(self, vdir, src, files):
         old_version, new_version = version_of(src), version_of(vdir)
         details = [
@@ -781,6 +824,7 @@ class Plan:
                 continue
             self.has_changes = True
             self.classify(status, old, path)
+        self.removed_versions(changes)
         self.release_bumps()
         self.tooling()
         self.language_copies()
