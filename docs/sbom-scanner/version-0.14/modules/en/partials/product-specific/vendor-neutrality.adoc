@@ -1,2 +1,0 @@
-// Product only: the introduction has no vendor neutrality section in the
-// product build.

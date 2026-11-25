@@ -161,10 +161,6 @@ the upstream community repository. Remove an item when it is done.
   `antora … | tee` in the `Makefile`: the pipe hides the exit status of
   Antora. Set `SHELL := bash` and `.SHELLFLAGS := -eo pipefail -c`, and
   upload `tmp/build.log` and `make.log` as workflow artifacts.
-- **Versions that upstream renames or deletes.** `scripts/sync.py` does not
-  delete a component version that upstream renamed or deleted. Upstream
-  renamed `sbom-scanner` 0.14 to 1.0, so `docs/sbom-scanner/version-0.14`
-  is a leftover. Delete it, and add a check to `sync.py`.
 - **Preview deploy.** `.github/workflows/preview.yml` builds, uploads and
   deploys in one job. One run failed with "Found 0 artifact(s)"
   (actions/deploy-pages#451). If it occurs again, split the job as upstream
