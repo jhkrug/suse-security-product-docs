@@ -5,9 +5,9 @@ the upstream community repository. Remove an item when it is done.
 
 ## Values to confirm
 
-- **Admission controller image tags.** In `admission-controller/version-1.39`,
-  `{release-tag}` (`v1.38.2`) is the upstream tag. The product file assumes
-  that the product image tags are the same.
+- **Admission controller image tags.** In `admission-controller/version-1.40`,
+  the dev version, `{release-tag}` (`v1.39.0`) is the upstream tag. The
+  product file assumes that the product image tags are the same.
   `{default-policy-server-image-tag}` uses `{release-tag}` to make the
   `dp.apps.rancher.io` image reference. If the product image tags
   have no leading `v`, add a separate image tag attribute.
@@ -20,8 +20,8 @@ the upstream community repository. Remove an item when it is done.
   `oci://dp.apps.rancher.io/charts/suse-security-network-enforcer`. No page
   uses it at the moment.
 - **Hauler manifest signing identity.** `:hauler-manifest-cert-identity:` in
-  the `admission-controller` 1.39 `variables.adoc` is an exact identity. It is
-  correct because the signing workflow in `rancher/suse-security` signs only
+  the `admission-controller` 1.39 and 1.40 `variables.adoc` is an exact
+  identity. It is correct because the signing workflow in `rancher/suse-security` signs only
   on `main`. If the workflow ever signs from tags or from a reusable
   workflow, change the identity. Use `--certificate-identity-regexp` with
   `--certificate-github-workflow-repository` and
@@ -81,24 +81,24 @@ the upstream community repository. Remove an item when it is done.
   community values that must be different in the product build: registries,
   Helm charts and `helm repo add` commands, namespaces, URLs and names. The
   table gives approximate counts in the English pages of the latest and dev
-  versions. AC is Admission Controller, VS is Vulnerability Scanner, RTE is
-  Runtime Enforcer, NE is Network Enforcer and KW is the SUSE Security
-  landing component, `kw`.
+  versions, counted on 2026-11-25. AC is Admission Controller, VS is
+  Vulnerability Scanner, RTE is Runtime Enforcer, NE is Network Enforcer and
+  KW is the SUSE Security landing component, `kw`.
 
-  | Pattern | AC 1.38 | AC 1.39 | VS 0.13 | VS 0.14 | RTE 0.10 | RTE 0.11 | NE 0.3 | NE 0.4 | KW 1.0 |
+  | Pattern | AC 1.38 | AC 1.40 | VS 0.13 | VS 1.0 | RTE 0.10 | RTE 0.12 | NE 0.3 | NE 0.5 | KW 1.0 |
   |---|---|---|---|---|---|---|---|---|---|
-  | `ghcr.io/kubewarden` | 129 | 119 | 9 | 9 | 1 | 10 | 9 | 9 | 0 |
-  | `charts.kubewarden.io` | 12 | 12 | 3 | 3 | 0 | 1 | 2 | 2 | 0 |
-  | `helm repo add` | 14 | 14 | 4 | 4 | 2 | 2 | 2 | 2 | 0 |
-  | `kubewarden` namespace | 46 | 46 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
-  | `github.com/kubewarden` | 137 | 138 | 19 | 19 | 4 | 15 | 13 | 13 | 1 |
-  | `Kubewarden` as a name | 27 | 27 | 1 | 1 | 0 | 1 | 1 | 1 | 0 |
+  | `ghcr.io/kubewarden` | 116 | 116 | 9 | 12 | 1 | 13 | 9 | 13 | 0 |
+  | `charts.kubewarden.io` | 12 | 12 | 2 | 2 | 0 | 1 | 1 | 1 | 0 |
+  | `helm repo add` | 14 | 14 | 1 | 1 | 0 | 0 | 0 | 0 | 0 |
+  | `kubewarden` namespace | 46 | 50 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+  | `github.com/kubewarden` | 138 | 136 | 19 | 15 | 4 | 15 | 13 | 10 | 1 |
+  | `Kubewarden` as a name | 26 | 27 | 1 | 2 | 0 | 2 | 1 | 2 | 0 |
 
   Many hits are correct community references, for example source code links
   and policy images. Do the work in these steps:
 
   1. Do one component at a time, in the dev version, starting with
-     `admission-controller` 1.39. The promotion carries the changes to later
+     `admission-controller` 1.40. The promotion carries the changes to later
      versions. Do not change older versions.
   2. For each pass, list every hit and sort it: parameterize, keep as
      community, or decide later. Review the "decide later" group.
@@ -108,8 +108,7 @@ the upstream community repository. Remove an item when it is done.
      community and a product value.
   4. Build both sites and compare.
 
-  The **Verifying images** item above and the **Runtime Enforcer quick
-  start** item below are examples.
+  The **Verifying images** item above is an example.
 - **Personal paths in examples.** Four `admission-controller` tutorials have a
   local path from an author's workstation in their example commands and
   output, for example `-v /home/jhk/projects/suse/tmp/go-kw-demo:/src` and
@@ -120,7 +119,7 @@ the upstream community repository. Remove an item when it is done.
   - `tutorials/writing-policies/rust/03-define-policy-settings.adoc`
   - `tutorials/writing-policies/rust/05-mutation-policy.adoc`
 
-  All versions from 1.28 to 1.39 have them, in English and in the
+  All versions from 1.28 to 1.40 have them, in English and in the
   translations. Fix the dev version upstream. The translations get the fix
   from the next translation run.
 - **Policy Server CLI translations.** The translation process damaged the
@@ -132,9 +131,18 @@ the upstream community repository. Remove an item when it is done.
   (1.35 and earlier), which escapes each special character as `++[++`. The
   English pages of 1.36 and later use plain text. If a translation run from
   the old English source occurs again, examine the result for this damage.
-- **Runtime Enforcer quick start.** The quick start uses
-  `helm repo add ... {runtime-enforcer-helm-chart}`. The product chart is an
-  `oci://` reference, which `helm repo add` does not accept.
+- **SUSE Rancher Prime name.** The product partial
+  `quick-start-installation.adoc` of `admission-controller` 1.38 and 1.40
+  has "SUSE Rancher Prime" as literal text. Revisit it. If more pages use
+  the name, add an attribute to the product `globals.adoc`.
+- **Umbrella quick start.** The quick starts of the Vulnerability Scanner,
+  the Runtime Enforcer and the Network Enforcer link to the SUSE Security
+  quick start in `kw` (`pages/product-specific/quick-start.adoc`), which is a
+  placeholder. Tell the author of that guide two things:
+  - The product Network Enforcer quick start no longer shows the provider
+    choice (Istio, Calico or Cilium). The SUSE Security guide must cover it.
+  - The xref has no version. It goes to the SUSE Security page of the newest
+    release, also from the pages of older releases.
 
 ## Build and publishing
 
@@ -147,6 +155,21 @@ the upstream community repository. Remove an item when it is done.
 - **Sync: hardening.** [what-can-go-wrong.md](what-can-go-wrong.md) lists
   how the sync can fail or give a wrong result. It also lists the changes
   that make the sync safer.
+- **Build errors in CI.** The sync workflow build report
+  (`scripts/build-report.sh`) showed 0 errors for #73 and #75. A local build
+  of the #75 branch had 3 errors and 12 warnings. The probable cause is
+  `antora … | tee` in the `Makefile`: the pipe hides the exit status of
+  Antora. Set `SHELL := bash` and `.SHELLFLAGS := -eo pipefail -c`, and
+  upload `tmp/build.log` and `make.log` as workflow artifacts.
+- **Versions that upstream renames or deletes.** `scripts/sync.py` does not
+  delete a component version that upstream renamed or deleted. Upstream
+  renamed `sbom-scanner` 0.14 to 1.0, so `docs/sbom-scanner/version-0.14`
+  is a leftover. Delete it, and add a check to `sync.py`.
+- **Preview deploy.** `.github/workflows/preview.yml` builds, uploads and
+  deploys in one job. One run failed with "Found 0 artifact(s)"
+  (actions/deploy-pages#451). If it occurs again, split the job as upstream
+  kubewarden/docs#1035 does: a separate `deploy` job with `needs: build`. Do
+  not run the full workflow again, because it uploads a second artifact.
 - **Mermaid diagrams in the publishing playbook.**
   `@sntke/antora-mermaid-extension` applies `subs` to the wrong value, so
   diagrams with `[mermaid,subs="attributes"]` render as the word "attributes".
