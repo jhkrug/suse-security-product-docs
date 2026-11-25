@@ -1,0 +1,12 @@
+// The installation section of the quick start in the product build. The
+// SUSE Security Helm chart installs all components, so this section points to
+// the SUSE Security quick start.
+
+[#_installation]
+== Installation
+
+You install {ne-short-name} as part of {product-project-name}. The
+{product-project-name} Helm chart installs all {product-project-name}
+components in one step. To install {product-project-name}, refer to
+xref:kubewarden:en:product-specific/quick-start.adoc[Install
+{product-project-name}].
